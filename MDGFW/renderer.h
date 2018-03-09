@@ -8,19 +8,28 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+#include <iostream>
+
 #include <MDGFW/sprite.h>
+#include <MDGFW\World.h>
+#include <MDGFW\InputManager.h>
+#include <MDGFW\MDGFWConfig.h>
 
 class Renderer
 {
 	public:
-		Renderer(unsigned int w, unsigned int h);
+		Renderer();
 		virtual ~Renderer();
-
+		void updateWorld( World* world );
 		void renderSprite(Sprite* sprite, float px, float py, float sx, float sy, float rot);
 		GLFWwindow* window() { return _window; };
 
 		unsigned int width() { return _window_width; };
 		unsigned int height() { return _window_height; };
+
+		void useVSYNC(bool state) {
+			glfwSwapInterval( state );
+		}
 
 	private:
 		int init();

@@ -7,10 +7,10 @@
 #include <MDGFW/camera.h>
 #include <MDGFW/renderer.h>
 
-Renderer::Renderer(unsigned int w, unsigned int h)
+Renderer::Renderer()
 {
-	_window_width = w;
-	_window_height = h;
+	_window_width = MINSWIDTH;
+	_window_height = MINSHEIGHT;
 
 	this->init();
 }
@@ -35,7 +35,7 @@ int Renderer::init()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
 	// Open a window and create its OpenGL context
-	_window = glfwCreateWindow( _window_width, _window_height, "Demo", NULL, NULL);
+	_window = glfwCreateWindow( _window_width, _window_height, TITLE, NULL, NULL);
 	if( _window == NULL ){
 		fprintf( stderr, "Failed to open GLFW window.\n" );
 		glfwTerminate();
@@ -48,6 +48,10 @@ int Renderer::init()
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		return -1;
 	}
+
+	useVSYNC( VSYNC );
+
+	glfwSetWindowSizeLimits( _window, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE );
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -72,6 +76,13 @@ int Renderer::init()
 	glUseProgram(_programID);
 
 	return 0;
+}
+
+void Renderer::updateWorld( World* world ) {
+	_window_width = InputManager::getManager()->getWindowWidth();
+	_window_height = InputManager::getManager()->getWindowHeight();
+
+	_projectionMatrix = glm::ortho( 0.0f, ( float ) _window_width, ( float ) _window_height, 0.0f, 0.1f, 100.0f );
 }
 
 void Renderer::renderSprite(Sprite* sprite, float px, float py, float sx, float sy, float rot)

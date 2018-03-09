@@ -49,6 +49,17 @@ add_library(MDGFW
 	MDGFW/renderer.cpp
 	MDGFW/sprite.h
 	MDGFW/sprite.cpp
+	MDGFW/Engine.cpp
+	MDGFW/Engine.h
+	MDGFW/MDGFWConfig.h
+	MDGFW/World.cpp
+	MDGFW/World.h
+	MDGFW/InputManager.cpp
+	MDGFW/InputManager.h
+	MDGFW/SHTime.cpp
+	MDGFW/SHTime.h
+	MDGFW/Entity.cpp
+	MDGFW/Entity.h
 )
 file(
 	COPY MDGFW/shaders

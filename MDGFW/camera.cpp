@@ -19,13 +19,6 @@ float speed = 300.0f; // 300 units / second
 
 void computeMatricesFromInputs(GLFWwindow* window)
 {
-	// glfwGetTime is called only once, the first time this function is called
-	static double lastTime = glfwGetTime();
-
-	// Compute time difference between current and last frame
-	double currentTime = glfwGetTime();
-	float deltaTime = float(currentTime - lastTime);
-
 	// Get mouse position
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
@@ -37,19 +30,19 @@ void computeMatricesFromInputs(GLFWwindow* window)
 
 	// Move up
 	if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS){
-		position += up * deltaTime * speed;
+		position += up * Time::deltaTime * speed;
 	}
 	// Move down
 	if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS){
-		position -= up * deltaTime * speed;
+		position -= up * Time::deltaTime * speed;
 	}
 	// Strafe right
 	if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS){
-		position += right * deltaTime * speed;
+		position += right * Time::deltaTime * speed;
 	}
 	// Strafe left
 	if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS){
-		position -= right * deltaTime * speed;
+		position -= right * Time::deltaTime * speed;
 	}
 
 	// View matrix
@@ -58,7 +51,4 @@ void computeMatricesFromInputs(GLFWwindow* window)
 			position + glm::vec3(0, 0, -5), // and looks towards Z
 			glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 			);
-
-	// For the next frame, the "last time" will be "now"
-	lastTime = currentTime;
 }

@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+#include <MDGFW\SHTime.h>
+
 void computeMatricesFromInputs(GLFWwindow* window);
 glm::mat4 getViewMatrix();
 glm::vec3 getCursor();

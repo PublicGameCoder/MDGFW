@@ -11,6 +11,7 @@ add_subdirectory (ExtLibs)
 include_directories(
 	${CMAKE_SOURCE_DIR}/ExtLibs/glfw-3.2.1/include/GLFW
 	${CMAKE_SOURCE_DIR}/ExtLibs/glm-0.9.8.4
+	${CMAKE_SOURCE_DIR}/ExtLibs/glew-1.9.0/include/
 	${CMAKE_SOURCE_DIR}/ExtLibs
 	
 	${CMAKE_SOURCE_DIR}/MDGFW
@@ -26,6 +27,7 @@ set(ALL_GRAPHICS_LIBS
 	${OPENGL_LIBRARY}
 	MDGFW
 	glfw
+	GLEW_190
 )
 
 add_definitions(
@@ -41,12 +43,28 @@ add_definitions(
 ####################################################################
 
 add_library(MDGFW
+	MDGFW/camera.h
+	MDGFW/camera.cpp
+	MDGFW/renderer.h
+	MDGFW/renderer.cpp
+	MDGFW/sprite.h
+	MDGFW/sprite.cpp
+)
+file(
+	COPY MDGFW/shaders
+	DESTINATION ${CMAKE_BINARY_DIR}
 )
 
 IF(MAKE_WORKSPACE)
 	add_executable(Workspace
 		Workspace/main.cpp
 	)
+	
+	file(
+		COPY Workspace/assets
+		DESTINATION ${CMAKE_BINARY_DIR}
+	)
+	
 	target_link_libraries(Workspace
 		${ALL_GRAPHICS_LIBS}
 	)

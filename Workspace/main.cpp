@@ -7,11 +7,14 @@ int main( void )
 
 	World* world1 = new World();
 
+	Line* line = new Line();
+
 	Entity* pencils = new Entity();
 	pencils->addSprite( "assets/pencils.tga" );
 	pencils->position = Vector2( 400, 300 );
 	pencils->scale = Vector2( 1, 1 );
 	pencils->rotation = Vector3();
+	pencils->addLine( line );
 
 	Entity* kingkong = new Entity();
 	kingkong->addSprite( "assets/kingkong.tga" );

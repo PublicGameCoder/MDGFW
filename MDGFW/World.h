@@ -11,15 +11,7 @@ public:
 	World();
 	virtual ~World();
 
-	void addSprite( Sprite* sprite ) {
-		_sprites.push_back( sprite );
-	}
-
-	std::vector<Sprite*> getSprites() {
-		return _sprites;
-	}
-
 private:
-	std::vector<Sprite*> _sprites;
+
 };
 #endif // !WORLD_H

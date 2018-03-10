@@ -60,6 +60,8 @@ add_library(MDGFW
 	MDGFW/SHTime.h
 	MDGFW/Entity.cpp
 	MDGFW/Entity.h
+	MDGFW/VectorX.h
+	MDGFW/PointX.h
 )
 file(
 	COPY MDGFW/shaders
@@ -69,6 +71,7 @@ file(
 IF(MAKE_WORKSPACE)
 	add_executable(Workspace
 		Workspace/main.cpp
+		Workspace/RGBAObj.h
 	)
 	
 	file(

@@ -8,10 +8,25 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+#include <MDGFW\Entity.h>
 #include <MDGFW\SHTime.h>
 
-void computeMatricesFromInputs(GLFWwindow* window);
-glm::mat4 getViewMatrix();
-glm::vec3 getCursor();
+class Camera : public Entity
+{
+public:
+	Camera();
+	virtual ~Camera();
+
+	void updateCamera( GLFWwindow* window );
+	glm::mat4 getViewMatrix();
+	glm::vec3 getCursor();
+
+private:
+	glm::mat4 _viewMatrix;
+
+	glm::vec3 _cursor;
+
+	float _speed; // 300 units / second
+};
 
 #endif

@@ -62,6 +62,9 @@ add_library(MDGFW
 	MDGFW/Entity.h
 	MDGFW/VectorX.h
 	MDGFW/PointX.h
+	MDGFW/Line.cpp
+	MDGFW/Line.h
+	MDGFW/color.h
 )
 file(
 	COPY MDGFW/shaders

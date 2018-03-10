@@ -33,6 +33,7 @@ int Renderer::init()
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_RESIZABLE, false);//Can the user resize the window or not?
 
 	// Open a window and create its OpenGL context
 	_window = glfwCreateWindow( _window_width, _window_height, TITLE, NULL, NULL);
@@ -51,7 +52,10 @@ int Renderer::init()
 
 	useVSYNC( VSYNC );
 
-	glfwSetWindowSizeLimits( _window, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE );
+	GLFWmonitor* primary = glfwGetPrimaryMonitor();
+
+	//Use when user is able to resize (this restricts the user's window size between 2 values on the x and y (WINDOW,MINX,MINY,MAXX,MAXY))
+	//glfwSetWindowSizeLimits( _window, MINSWIDTH, MINSHEIGHT, MINSWIDTH, MINSHEIGHT );
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -75,19 +79,52 @@ int Renderer::init()
 	// Use our shader
 	glUseProgram(_programID);
 
+	_camera = new Camera();
+
 	return 0;
 }
 
 void Renderer::updateWorld( World* world ) {
-	_window_width = InputManager::getManager()->getWindowWidth();
-	_window_height = InputManager::getManager()->getWindowHeight();
+	// Clear the screen
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	_projectionMatrix = glm::ortho( 0.0f, ( float ) _window_width, ( float ) _window_height, 0.0f, 0.1f, 100.0f );
+	// Compute the ViewMatrix from keyboard and mouse input (see: camera.h/cpp)
+	_camera->updateCamera(_window);
+	//glm::vec3 cursor = getCursor(); // from Camera
+	//printf("(%f,%f)\n",cursor.x, cursor.y);
+
+	for each (Entity* child in world->getChilds()) {
+		updateEntity( child );
+	}
+
+	// Swap buffers
+	glfwSwapBuffers( _window );
+}
+
+void Renderer::updateEntity( Entity* entity ) {
+
+	entity->update();
+
+	static float rot_z = 0.0f;
+
+	Sprite* sprite = entity->getSprite();
+	renderSprite( sprite, entity->position, entity->scale, entity->rotation );
+	/*
+	// Render all Sprites (Sprite*, xpos, ypos, xscale, yscale, rotation)
+	renderSprite( sprite, 400, 300, 1.0f, 1.0f, 0.0f );
+	renderSprite( sprites[1], 900, 400, 1.0f, 1.0f, 0.0f );
+	renderSprite( sprites[2], float( InputManager::getManager()->getWindowWidth() ) / 2, float( InputManager::getManager()->getWindowHeight() ) / 2, 3.0f, 3.0f, rot_z );
+	rot_z += (0.3f * Time::deltaTime);
+	*/
+}
+
+void Renderer::renderSprite( Sprite* sprite, Vector3 pos, Vector3 scl, Vector3 rot ) {
+	renderSprite( sprite, pos.x, pos.y, scl.x, scl.y, rot.z );
 }
 
 void Renderer::renderSprite(Sprite* sprite, float px, float py, float sx, float sy, float rot)
 {
-	glm::mat4 viewMatrix  = getViewMatrix(); // get from Camera (Camera position and direction)
+	glm::mat4 viewMatrix  = _camera->getViewMatrix(); // get from Camera (Camera position and direction)
 	glm::mat4 modelMatrix = glm::mat4(1.0f);
 
 	// Build the Model matrix

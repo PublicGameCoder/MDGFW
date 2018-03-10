@@ -10,6 +10,7 @@
 
 #include <iostream>
 
+#include <MDGFW\camera.h>
 #include <MDGFW/sprite.h>
 #include <MDGFW\World.h>
 #include <MDGFW\InputManager.h>
@@ -21,7 +22,7 @@ class Renderer
 		Renderer();
 		virtual ~Renderer();
 		void updateWorld( World* world );
-		void renderSprite(Sprite* sprite, float px, float py, float sx, float sy, float rot);
+
 		GLFWwindow* window() { return _window; };
 
 		unsigned int width() { return _window_width; };
@@ -32,6 +33,9 @@ class Renderer
 		}
 
 	private:
+
+		Camera* _camera;
+
 		int init();
 
 		GLFWwindow* _window;
@@ -42,6 +46,11 @@ class Renderer
 			const char* vertex_file_path,
 			const char* fragment_file_path
 		);
+
+		void Renderer::updateEntity( Entity* entity );
+
+		void renderSprite( Sprite* sprite, Vector3 pos, Vector3 scl, Vector3 rot );
+		void renderSprite( Sprite* sprite, float px, float py, float sx, float sy, float rot );
 
 		GLuint _programID;
 

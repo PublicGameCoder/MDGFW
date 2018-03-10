@@ -1,3 +1,4 @@
+#include <Workspace\RGBAObj.h>
 #include <MDGFW/Engine.h>
 
 int main( void )
@@ -6,25 +7,34 @@ int main( void )
 
 	World* world1 = new World();
 
-	Sprite* pencils = new Sprite("assets/pencils.tga");
-	Sprite* kingkong = new Sprite("assets/kingkong.tga");
-	Sprite* rgba = new Sprite("assets/rgba.tga");
+	Entity* pencils = new Entity();
+	pencils->addSprite( "assets/pencils.tga" );
+	pencils->position = Vector2( 400, 300 );
+	pencils->scale = Vector2( 1, 1 );
+	pencils->rotation = Vector3();
 
-	world1->addSprite( pencils );
-	world1->addSprite( kingkong );
-	world1->addSprite( rgba );
+	Entity* kingkong = new Entity();
+	kingkong->addSprite( "assets/kingkong.tga" );
+	kingkong->position = Vector2( 900, 400 );
+	kingkong->scale = Vector2( 1, 1 );
+	kingkong->rotation = Vector3();
+
+	RGBAObj* rgba = new RGBAObj();
+	rgba->addSprite( "assets/rgba.tga" );
+	rgba->position = Vector2( MINSWIDTH / 2, MINSHEIGHT / 2 );
+	rgba->scale = Vector2( 1, 1 );
+	rgba->rotation = Vector3();
+
+	world1->addChild( pencils );
+	world1->addChild( kingkong );
+	world1->addChild( rgba );
 
 	do {
-
 		engine.run(world1);
-
 	} // Check if the ESC key was pressed or the window was closed
 	while( engine.isRunning() || !glfwWindowShouldClose(engine.getWindow()) == 0 );
 	
-	delete world1;
-	delete pencils;
-	delete kingkong;
-	delete rgba;
+	delete world1;//also removes pencils/kingkong and rgba
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

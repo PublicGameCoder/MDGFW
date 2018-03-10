@@ -93,9 +93,7 @@ void Renderer::updateWorld( World* world ) {
 	//glm::vec3 cursor = getCursor(); // from Camera
 	//printf("(%f,%f)\n",cursor.x, cursor.y);
 
-	for each (Entity* child in world->getChilds()) {
-		updateEntity( child );
-	}
+	updateEntity( world );
 
 	// Swap buffers
 	glfwSwapBuffers( _window );
@@ -105,17 +103,50 @@ void Renderer::updateEntity( Entity* entity ) {
 
 	entity->update();
 
-	static float rot_z = 0.0f;
-
 	Sprite* sprite = entity->getSprite();
-	renderSprite( sprite, entity->position, entity->scale, entity->rotation );
-	/*
-	// Render all Sprites (Sprite*, xpos, ypos, xscale, yscale, rotation)
-	renderSprite( sprite, 400, 300, 1.0f, 1.0f, 0.0f );
-	renderSprite( sprites[1], 900, 400, 1.0f, 1.0f, 0.0f );
-	renderSprite( sprites[2], float( InputManager::getManager()->getWindowWidth() ) / 2, float( InputManager::getManager()->getWindowHeight() ) / 2, 3.0f, 3.0f, rot_z );
-	rot_z += (0.3f * Time::deltaTime);
-	*/
+	if ( sprite != nullptr ) {
+		renderSprite( sprite, entity->position, entity->scale, entity->rotation );
+	}
+	
+	renderLines( entity );
+
+	for each (Entity* child in entity->getChilds()) {
+		updateEntity( child );
+	}
+}
+
+void Renderer::renderLines( Entity* entity ) {
+
+	float lineWidth;
+	RGBAColor color;
+	Vector3 fromLocal;
+	Vector3 toLocal;
+	Vector3 fromGlobal;
+	Vector3 toGlobal;
+
+	for each (Line* line in entity->getLines()) {
+
+		lineWidth = line->getWidth();
+		color = line->getColor();
+
+		//Model position
+		fromLocal = line->getFrom();
+		toLocal = line->getTo();
+
+		//World position
+		fromGlobal = fromLocal + entity->getWorldPosition();
+		toGlobal = toLocal + entity->getWorldPosition();
+
+		glLineWidth( lineWidth );
+		glColor3f( color.r, color.g, color.b );
+
+		glBegin( GL_LINES );
+
+		glVertex3f( fromGlobal.x, fromGlobal.y, fromGlobal.z );
+		glVertex3f( toGlobal.x, toGlobal.y, toGlobal.z );
+
+		glEnd();
+	}
 }
 
 void Renderer::renderSprite( Sprite* sprite, Vector3 pos, Vector3 scl, Vector3 rot ) {

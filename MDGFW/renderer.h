@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <MDGFW\camera.h>
+#include <MDGFW\Line.h>
 #include <MDGFW/sprite.h>
 #include <MDGFW\World.h>
 #include <MDGFW\InputManager.h>
@@ -47,6 +48,7 @@ class Renderer
 			const char* fragment_file_path
 		);
 
+		void Renderer::renderLines( Entity* entity );
 		void Renderer::updateEntity( Entity* entity );
 
 		void renderSprite( Sprite* sprite, Vector3 pos, Vector3 scl, Vector3 rot );

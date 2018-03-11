@@ -65,6 +65,7 @@ add_library(MDGFW
 	MDGFW/Line.cpp
 	MDGFW/Line.h
 	MDGFW/color.h
+	MDGFW/Mathmatics.h
 )
 file(
 	COPY MDGFW/shaders

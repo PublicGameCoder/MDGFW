@@ -12,9 +12,8 @@ int main( void )
 	Entity* pencils = new Entity();
 	pencils->addSprite( "assets/pencils.tga" );
 	pencils->position = Vector2( 400, 300 );
-	pencils->scale = Vector2( 1, 1 );
+	pencils->scale = Vector2( 1, 1, 1 );
 	pencils->rotation = Vector3();
-	pencils->addLine( line );
 
 	Entity* kingkong = new Entity();
 	kingkong->addSprite( "assets/kingkong.tga" );
@@ -28,9 +27,14 @@ int main( void )
 	rgba->scale = Vector2( 1, 1 );
 	rgba->rotation = Vector3();
 
+	Entity* bezierCurve = new Entity();
+	bezierCurve->position = Vector2( MINSWIDTH / 2, (MINSHEIGHT / 2) );
+	pencils->addLine( line );
+
 	world1->addChild( pencils );
 	world1->addChild( kingkong );
 	world1->addChild( rgba );
+	world1->addChild( bezierCurve );
 
 	do {
 		engine.run(world1);

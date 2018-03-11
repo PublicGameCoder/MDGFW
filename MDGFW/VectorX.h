@@ -157,6 +157,26 @@ public:
 	*/
 	const glm::vec3 toVec3();
 
+	/**
+	* @brief Get the distance between two Vector_t<T>'s
+	*
+	* Returns the distance between two Vector_t<T>'s
+	*
+	* @return T
+	* The distance between two Vector_t<T>'s
+	*/
+	const T distance( VectorX_t<T> other ) const;
+
+	/**
+	* @brief Get the squared distance of the Vector_t<T>
+	*
+	* Returns the squared distance of the Vector_t<T>
+	*
+	* @return T
+	* The squared distance of the Vector_t<T>
+	*/
+	const T distSquared() const;
+
 	// length, angle, normalize, dot
 	/**
 	 * @brief Get the length of the Vector_t<T>
@@ -494,6 +514,22 @@ const glm::vec2 VectorX_t<T>::toVec2() {
 template <class T>
 const glm::vec3 VectorX_t<T>::toVec3() {
 	return glm::vec3( x, y, z );
+}
+
+template <class T>
+const T VectorX_t<T>::distance( VectorX_t<T> other ) const
+{
+	return sqrtf( distSquared() ) - sqrtf( other.distSquared() );
+}
+
+template <class T>
+const T VectorX_t<T>::distSquared() const
+{
+	T xx = this->x;
+	T yy = this->y;
+	T zz = this->z;
+
+	return (xx*xx) + (yy*yy) + (zz*zz);
 }
 
 // getLength()

@@ -2,6 +2,8 @@
 
 Entity::Entity() {
 	position = Vector3();
+	scale = Vector3( 1, 1, 1 );
+	rotation = Vector3();
 	_worldPosition = position;
 	_sprite = nullptr;
 	_parent = nullptr;

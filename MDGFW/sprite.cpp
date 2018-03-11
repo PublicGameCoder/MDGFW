@@ -160,8 +160,8 @@ GLuint Sprite::loadTGA(const std::string& imagepath)
 
 	// wrapping
 	// GL_REPEAT, GL_MIRRORED_REPEAT or GL_CLAMP_TO_EDGE
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 	// handle transparency and grayscale and give the image to OpenGL
 	switch (bitdepth) {

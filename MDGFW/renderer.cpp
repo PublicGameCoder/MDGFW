@@ -6,6 +6,7 @@
 
 #include <MDGFW/camera.h>
 #include <MDGFW/renderer.h>
+#include <MDGFW\Mathmatics.h>
 
 Renderer::Renderer()
 {
@@ -129,16 +130,17 @@ void Renderer::renderLines( Entity* entity ) {
 		lineWidth = line->getWidth();
 		color = line->getColor();
 
+		glLineWidth( lineWidth );
+		glColor3f( color.r, color.g, color.b );
+
 		//Model position
 		fromLocal = line->getFrom();
 		toLocal = line->getTo();
 
 		//World position
-		fromGlobal = fromLocal + entity->getWorldPosition();
-		toGlobal = toLocal + entity->getWorldPosition();
-
-		glLineWidth( lineWidth );
-		glColor3f( color.r, color.g, color.b );
+		Vector3 ewp = entity->getWorldPosition();
+		fromGlobal = fromLocal + ewp;
+		toGlobal = toLocal + ewp;
 
 		glBegin( GL_LINES );
 

@@ -1,6 +1,7 @@
 #ifndef LINE_H
 #define LINE_H
 
+#include <vector>
 #include <MDGFW\VectorX.h>
 #include <MDGFW\color.h>
 
@@ -9,6 +10,22 @@ class Line
 public:
 	Line();
 	~Line();
+
+	void setWidth( float width ) {
+		_lineWidth = width;
+	}
+
+	void setColor( RGBAColor color ) {
+		_color = color;
+	}
+
+	void setLocalFrom( Vector3 pos1 ) {
+		_pos1 = pos1;
+	}
+
+	void setLocalTo( Vector3 pos2 ) {
+		_pos2 = pos2;
+	}
 
 	float getWidth() {
 		return _lineWidth;
@@ -24,7 +41,6 @@ public:
 	Vector3 getTo() {
 		return _pos2;
 	}
-
 
 private:
 	float _lineWidth;

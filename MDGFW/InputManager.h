@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 
-#include <MDGFW\SHTime.h>
+#include <MDGFW\MDGTime.h>
 #include <MDGFW\MDGFWConfig.h>
 
 enum KeyCode;

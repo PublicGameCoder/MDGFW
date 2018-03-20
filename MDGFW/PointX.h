@@ -12,8 +12,6 @@
 #ifndef POINT_H_
 #define POINT_H_
 
-#include <iostream>
-
 /**
  * @brief The Point_t class is a helper class that makes it easier to define points in space.
  *

@@ -3,7 +3,9 @@
 
 #include <string>
 
-#include <GL/glew.h>
+#include <iostream>
+
+#include "MDGFW\ResourceManager.h"
 
 class Sprite
 {
@@ -11,7 +13,7 @@ class Sprite
 		Sprite(std::string image_path);
 		virtual ~Sprite();
 
-		GLuint texture() { return _texture; };
+		Texture* texture() { return _texture; };
 		GLuint vertexbuffer() { return _vertexbuffer; };
 		GLuint uvbuffer() { return _uvbuffer; };
 
@@ -19,9 +21,8 @@ class Sprite
 		unsigned int height() { return _height; };
 
 	private:
-		GLuint loadTGA(const std::string& imagepath);
 
-		GLuint _texture;
+		Texture* _texture;
 		GLuint _vertexbuffer;
 		GLuint _uvbuffer;
 

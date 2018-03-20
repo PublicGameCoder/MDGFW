@@ -40,11 +40,61 @@ public:
 	}
 
 	//Cubic Bázier Curve (smooth line between 4 points)
-	static Vector3 cubeCurve(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float p) {
-		Vector3 P0 = quadraticCurve(a, b, c, p);
-		Vector3 P1 = quadraticCurve(b, c, d, p);
-		return lerp(P0, P1, p);
+	static Vector3 cubeCurve( Vector3 a, Vector3 b, Vector3 c, Vector3 d, float p ) {
+		Vector3 P0 = quadraticCurve( a, b, c, p );
+		Vector3 P1 = quadraticCurve( b, c, d, p );
+		return lerp( P0, P1, p );
 	}
+
+	//Quartic Bázier Curve (smooth line between 5 points)
+	static Vector3 quarticCurve( Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 e, float p ) {
+		Vector3 P0 = cubeCurve( a, b, c, d, p );
+		Vector3 P1 = cubeCurve( b, c, d, e, p );
+		return lerp( P0, P1, p );
+	}
+
+	//Quintic Bázier Curve (smooth line between 6 points)
+	static Vector3 quinticCurve( Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 e, Vector3 f, float p ) {
+		Vector3 P0 = quarticCurve( a, b, c, d, e, p );
+		Vector3 P1 = quarticCurve( b, c, d, e, f, p );
+		return lerp( P0, P1, p );
+	}
+
+	//Sextic Bázier Curve (smooth line between 7 points)
+	static Vector3 sexticCurve( Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 e, Vector3 f, Vector3 g, float p ) {
+		Vector3 P0 = quinticCurve( a, b, c, d, e, f, p );
+		Vector3 P1 = quinticCurve( b, c, d, e, f, g, p );
+		return lerp( P0, P1, p );
+	}
+
+	//Septic Bázier Curve (smooth line between 8 points)
+	static Vector3 septicCurve( Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 e, Vector3 f, Vector3 g, Vector3 h, float p ) {
+		Vector3 P0 = sexticCurve( a, b, c, d, e, f, g, p );
+		Vector3 P1 = sexticCurve( b, c, d, e, f, g, h, p );
+		return lerp( P0, P1, p );
+	}
+
+	//Octic Bázier Curve (smooth line between 9 points)
+	static Vector3 octic( Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 e, Vector3 f, Vector3 g, Vector3 h, Vector3 i, float p ) {
+		Vector3 P0 = septicCurve( a, b, c, d, e, f, g, h, p );
+		Vector3 P1 = septicCurve( b, c, d, e, f, g, h, i, p );
+		return lerp( P0, P1, p );
+	}
+
+	//Nonic Bázier Curve (smooth line between 10 points)
+	static Vector3 nonicCurve( Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 e, Vector3 f, Vector3 g, Vector3 h, Vector3 i, Vector3 j, float p ) {
+		Vector3 P0 = octic( a, b, c, d, e, f, g, h, i, p );
+		Vector3 P1 = octic( b, c, d, e, f, g, h, i, j, p );
+		return lerp( P0, P1, p );
+	}
+
+	//Decic Bázier Curve (smooth line between 11 points)
+	static Vector3 decicCurve( Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 e, Vector3 f, Vector3 g, Vector3 h, Vector3 i, Vector3 j, Vector3 k, float p ) {
+		Vector3 P0 = nonicCurve( a, b, c, d, e, f, g, h, i, j, p );
+		Vector3 P1 = nonicCurve( b, c, d, e, f, g, h, i, j, k, p );
+		return lerp( P0, P1, p );
+	}
+
 	/*FindClosestPoint
 	finds the point on a line between point A and B that is closest to the target.
 	**/

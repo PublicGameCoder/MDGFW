@@ -2,14 +2,8 @@
 #define CAMERA_H
 
 #include <GL/glew.h>
-#include <glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
 
 #include <MDGFW\Entity.h>
-#include <MDGFW\SHTime.h>
 
 class Camera : public Entity
 {

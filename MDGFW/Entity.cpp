@@ -49,6 +49,7 @@ void Entity::addChild( Entity* entity ) {
 
 void Entity::addLine( Line* line ) {
 	_lines.push_back( line );
+	line->setParent( this );
 }
 
 Sprite* Entity::getSprite() {
@@ -68,7 +69,7 @@ Vector3 Entity::getWorldPosition() {
 }
 
 void Entity::flushSprite() {
-	if ( _sprite != nullptr ) {
-		delete _sprite;
+	if ( this->_sprite != NULL ) {
+		delete this->_sprite;
 	}
 }

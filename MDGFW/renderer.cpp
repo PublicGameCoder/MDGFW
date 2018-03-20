@@ -1,12 +1,4 @@
-#include <cstdio>
-#include <cstdlib>
-#include <string>
-#include <vector>
-#include <fstream>
-
-#include <MDGFW/camera.h>
 #include <MDGFW/renderer.h>
-#include <MDGFW\Mathmatics.h>
 
 Renderer::Renderer()
 {
@@ -120,8 +112,8 @@ void Renderer::renderLines( Entity* entity ) {
 
 	float lineWidth;
 	RGBAColor color;
-	Vector3 fromLocal;
-	Vector3 toLocal;
+	Vector3 from;
+	Vector3 to;
 	Vector3 fromGlobal;
 	Vector3 toGlobal;
 
@@ -131,24 +123,83 @@ void Renderer::renderLines( Entity* entity ) {
 		color = line->getColor();
 
 		glLineWidth( lineWidth );
+
 		glColor3f( color.r, color.g, color.b );
 
 		//Model position
-		fromLocal = line->getFrom();
-		toLocal = line->getTo();
+		from = line->getFrom();
+		to = line->getTo();
 
-		//World position
-		Vector3 ewp = entity->getWorldPosition();
-		fromGlobal = fromLocal + ewp;
-		toGlobal = toLocal + ewp;
+		if ( line->hasAnchors() ) {
+			std::vector<Vector3> aps = line->getAnchors();
+			std::vector<Vector3> anchors;
+			anchors.push_back( toWorldSpace(entity, from, line->isFromLocal()) );
+			for ( std::vector<Vector3>::iterator it = aps.begin(); it != aps.end(); ++it ) {
+				anchors.push_back( toWorldSpace(entity, *it, true) );
+			}
+			anchors.push_back( toWorldSpace( entity, to, line->isToLocal() ) );
+			int s = anchors.size();
+			glBegin( GL_LINE_STRIP );
+			Vector3 pos1 = anchors[0];
+			glVertex3f( pos1.x, pos1.y, pos1.z );
+			float stepSize = 1.0f / line->getPrecision();
+			for ( float p = stepSize; p < 1.0f; p += stepSize ) {
+				Vector3 pos2;
+				if ( s == 3 ) {
+					pos2 = Math::quadraticCurve( anchors[0], anchors[1], anchors[2], p );
+				}
+				else if ( s == 4 ) {
+					pos2 = Math::cubeCurve( anchors[0], anchors[1], anchors[2], anchors[3], p );
+				}
+				else if ( s == 5 ) {
+					pos2 = Math::quarticCurve( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], p );
+				}
+				else if ( s == 6 ) {
+					pos2 = Math::quinticCurve( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], anchors[5], p );
+				}
+				else if ( s == 7 ) {
+					pos2 = Math::sexticCurve( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], anchors[5], anchors[6], p );
+				}
+				else if ( s == 8 ) {
+					pos2 = Math::septicCurve( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], anchors[5], anchors[6], anchors[7], p );
+				}
+				else if ( s == 9 ) {
+					pos2 = Math::octic( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], anchors[5], anchors[6], anchors[7], anchors[8], p );
+				}
+				else if ( s == 10 ) {
+					pos2 = Math::nonicCurve( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], anchors[5], anchors[6], anchors[7], anchors[8], anchors[9], p );
+				}
+				else if ( s == 11 ) {
+					pos2 = Math::decicCurve( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], anchors[5], anchors[6], anchors[7], anchors[8], anchors[9], anchors[10], p );
+				}
+				else {
+					pos2 = Math::decicCurve( anchors[0], anchors[1], anchors[2], anchors[3], anchors[4], anchors[5], anchors[6], anchors[7], anchors[8], anchors[9], anchors[10], p );
+				}
+				glVertex3f( pos2.x , pos2.y, pos2.z );
+			}
 
-		glBegin( GL_LINES );
+			glEnd();
+		}
+		else {
+			//World position
+			fromGlobal = from;//toWorldSpace( entity, from, line->isFromLocal() );
+			toGlobal = to;//toWorldSpace( entity, to, line->isToLocal() );
 
-		glVertex3f( fromGlobal.x, fromGlobal.y, fromGlobal.z );
-		glVertex3f( toGlobal.x, toGlobal.y, toGlobal.z );
+			glBegin( GL_LINES );
 
-		glEnd();
+			glVertex3f( fromGlobal.x, fromGlobal.y, fromGlobal.z );
+			glVertex3f( toGlobal.x, toGlobal.y, toGlobal.z );
+
+			glEnd();
+		}
 	}
+}
+
+Vector3& Renderer::toWorldSpace(Entity* owner,Vector3 pos, bool isLocal ) {
+	if ( isLocal ) {
+		pos += owner->getWorldPosition();
+	}
+	return pos;
 }
 
 void Renderer::renderSprite( Sprite* sprite, Vector3 pos, Vector3 scl, Vector3 rot ) {
@@ -176,7 +227,7 @@ void Renderer::renderSprite(Sprite* sprite, float px, float py, float sx, float 
 
 	// Bind our texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, sprite->texture());
+	glBindTexture(GL_TEXTURE_2D, sprite->texture()->getID());
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
 	GLuint textureID  = glGetUniformLocation(_programID, "myTextureSampler");
 	glUniform1i(textureID, 0);

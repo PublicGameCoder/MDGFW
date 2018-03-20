@@ -13,7 +13,6 @@
 #define COLOR_H_
 
 #include <algorithm>
-#include <cmath>
 
 /// @brief A 24 bit HSV color.
 ///

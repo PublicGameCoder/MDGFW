@@ -1,21 +1,14 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <GL/glew.h>
-#include <glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
-
 #include <iostream>
+#include <fstream>
 
-#include <MDGFW\camera.h>
-#include <MDGFW\Line.h>
+#include <MDGFW\Mathmatics.h>
+#include <MDGFW/camera.h>
+#include <MDGFW/Line.h>
 #include <MDGFW/sprite.h>
-#include <MDGFW\World.h>
-#include <MDGFW\InputManager.h>
-#include <MDGFW\MDGFWConfig.h>
+#include <MDGFW/World.h>
 
 class Renderer
 {
@@ -48,8 +41,8 @@ class Renderer
 			const char* fragment_file_path
 		);
 
-		void Renderer::renderLines( Entity* entity );
-		void Renderer::updateEntity( Entity* entity );
+		void renderLines( Entity* entity );
+		void updateEntity( Entity* entity );
 
 		void renderSprite( Sprite* sprite, Vector3 pos, Vector3 scl, Vector3 rot );
 		void renderSprite( Sprite* sprite, float px, float py, float sx, float sy, float rot );
@@ -57,6 +50,8 @@ class Renderer
 		GLuint _programID;
 
 		glm::mat4 _projectionMatrix;
+
+		Vector3& toWorldSpace( Entity* owner, Vector3 pos, bool isLocal );
 };
 
 #endif /* RENDERER_H */

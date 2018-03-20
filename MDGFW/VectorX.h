@@ -16,7 +16,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
-#include <cmath>
 #include <MDGFW\PointX.h>
 
 /**

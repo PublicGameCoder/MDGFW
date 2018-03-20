@@ -5,7 +5,8 @@
 #include <MDGFW\VectorX.h>
 #include <MDGFW\Line.h>
 #include <MDGFW\sprite.h>
-#include <MDGFW\SHTime.h>
+#include <MDGFW\InputManager.h>
+#include <MDGFW\MDGTime.h>
 
 class Entity
 {

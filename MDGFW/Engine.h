@@ -4,12 +4,7 @@
 // Include GLEW
 #include <GL\glew.h>
 
-// Include GLFW
-#include <glfw3.h>
-
 #include <MDGFW\renderer.h>
-#include <MDGFW/camera.h>
-#include <MDGFWConfig.h>
 
 class Engine
 {

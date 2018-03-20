@@ -56,8 +56,8 @@ add_library(MDGFW
 	MDGFW/World.h
 	MDGFW/InputManager.cpp
 	MDGFW/InputManager.h
-	MDGFW/SHTime.cpp
-	MDGFW/SHTime.h
+	MDGFW/MDGTime.cpp
+	MDGFW/MDGTime.h
 	MDGFW/Entity.cpp
 	MDGFW/Entity.h
 	MDGFW/VectorX.h
@@ -66,6 +66,13 @@ add_library(MDGFW
 	MDGFW/Line.h
 	MDGFW/color.h
 	MDGFW/Mathmatics.h
+	MDGFW/ResourceManager.cpp
+	MDGFW/ResourceManager.h
+	MDGFW/Texture.cpp
+	MDGFW/Texture.h
+	MDGFW/Text.cpp
+	MDGFW/Text.h
+	
 )
 file(
 	COPY MDGFW/shaders
@@ -76,6 +83,8 @@ IF(MAKE_WORKSPACE)
 	add_executable(Workspace
 		Workspace/main.cpp
 		Workspace/RGBAObj.h
+		Workspace/StickFigure.cpp
+		Workspace/StickFigure.h
 	)
 	
 	file(

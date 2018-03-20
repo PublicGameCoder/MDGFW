@@ -21,6 +21,7 @@ include_directories(
 link_directories(
 	${CMAKE_SOURCE_DIR}/ExtLibs/glfw-3.2.1/src
 	${CMAKE_SOURCE_DIR}/MDGFW
+	
 )
 
 set(ALL_GRAPHICS_LIBS

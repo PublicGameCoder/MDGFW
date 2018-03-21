@@ -16,6 +16,7 @@ include_directories(
 	
 	${CMAKE_SOURCE_DIR}/MDGFW
 	${CMAKE_SOURCE_DIR}/.
+	
 )
 
 link_directories(

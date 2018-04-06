@@ -8,4 +8,12 @@
 
 #define VSYNC true
 
+#define DEFAULTFONT "fonts/arial.ttf"
+
+#define DEFAULTSPRITESHADERVERTEX "shaders/sprite.vert"
+#define DEFAULTSPRITESHADERFRAGMENT "shaders/sprite.frag"
+
+#define DEFAULTTEXTSHADERVERTEX "shaders/text.vert"
+#define DEFAULTTEXTSHADERFRAGMENT "shaders/text.frag"
+
 #endif // !MDGFWCONFIG_H

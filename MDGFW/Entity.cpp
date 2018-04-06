@@ -49,7 +49,10 @@ void Entity::addChild( Entity* entity ) {
 
 void Entity::addLine( Line* line ) {
 	_lines.push_back( line );
-	line->setParent( this );
+}
+
+void Entity::addText( Text* text ) {
+	_texts.push_back( text );
 }
 
 Sprite* Entity::getSprite() {
@@ -62,6 +65,10 @@ std::vector<Entity*> Entity::getChilds() {
 
 std::vector<Line*> Entity::getLines() {
 	return _lines;
+}
+
+std::vector<Text*> Entity::getTexts() {
+	return _texts;
 }
 
 Vector3 Entity::getWorldPosition() {

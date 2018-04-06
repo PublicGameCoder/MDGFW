@@ -4,9 +4,11 @@
 #include <vector>
 #include <MDGFW\VectorX.h>
 #include <MDGFW\Line.h>
+#include <MDGFW\Text.h>
 #include <MDGFW\sprite.h>
 #include <MDGFW\InputManager.h>
 #include <MDGFW\MDGTime.h>
+#include <MDGFW\Mathmatics.h>
 
 class Entity
 {
@@ -18,6 +20,7 @@ public:
 	void addSprite(std::string filePath);
 	void addChild( Entity* entity );
 	void addLine( Line* line );
+	void addText( Text* text );
 	void flushSprite();
 	Sprite* getSprite();
 	Vector3 position;
@@ -25,6 +28,7 @@ public:
 	Vector3 scale;
 	std::vector<Entity*> getChilds();
 	std::vector<Line*> getLines();
+	std::vector<Text*> getTexts();
 	Vector3 getWorldPosition();
 private:
 	Entity* _parent;
@@ -33,6 +37,7 @@ private:
 
 	std::vector<Entity*> _childs;
 	std::vector<Line*> _lines;
+	std::vector<Text*> _texts;
 
 	void calcWorldPosition();
 protected:

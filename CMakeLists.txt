@@ -12,17 +12,17 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/ExtLibs/glfw-3.2.1/include/GLFW
 	${CMAKE_SOURCE_DIR}/ExtLibs/glm-0.9.8.4
 	${CMAKE_SOURCE_DIR}/ExtLibs/glew-1.9.0/include/
+	${CMAKE_SOURCE_DIR}/ExtLibs/freetype2/include/
 	${CMAKE_SOURCE_DIR}/ExtLibs
 	
 	${CMAKE_SOURCE_DIR}/MDGFW
 	${CMAKE_SOURCE_DIR}/.
-	
 )
 
 link_directories(
 	${CMAKE_SOURCE_DIR}/ExtLibs/glfw-3.2.1/src
 	${CMAKE_SOURCE_DIR}/MDGFW
-	
+	${CMAKE_SOURCE_DIR}/ExtLibs/freetype2/win32
 )
 
 set(ALL_GRAPHICS_LIBS
@@ -30,6 +30,19 @@ set(ALL_GRAPHICS_LIBS
 	MDGFW
 	glfw
 	GLEW_190
+	${CMAKE_SOURCE_DIR}/ExtLibs/freetype2/win32/freetype.lib
+)
+
+add_custom_target(CustomDlls
+  # todo: check if debug and release folder exist
+  # debug version
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/ExtLibs/freetype2/win32/freetype.dll          ${CMAKE_BINARY_DIR}/Debug
+  
+  # release version
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/ExtLibs/freetype2/win32/freetype.dll           ${CMAKE_BINARY_DIR}/Release
+
+  # Output Message
+  COMMENT "Copying Custom .dll binaries from '${CMAKE_SOURCE_DIR}/ExtLibs/freetype2/win32/freetype.dll' to '${CMAKE_BINARY_DIR}'" VERBATIM
 )
 
 add_definitions(
@@ -54,8 +67,11 @@ add_library(MDGFW
 	MDGFW/Engine.cpp
 	MDGFW/Engine.h
 	MDGFW/MDGFWConfig.h
-	MDGFW/World.cpp
-	MDGFW/World.h
+	MDGFW/Shader.h
+	MDGFW/Scene.cpp
+	MDGFW/Scene.h
+	MDGFW/SceneManager.cpp
+	MDGFW/SceneManager.h
 	MDGFW/InputManager.cpp
 	MDGFW/InputManager.h
 	MDGFW/MDGTime.cpp
@@ -81,6 +97,11 @@ file(
 	DESTINATION ${CMAKE_BINARY_DIR}
 )
 
+file(
+	COPY MDGFW/fonts
+	DESTINATION ${CMAKE_BINARY_DIR}
+)
+
 IF(MAKE_WORKSPACE)
 	add_executable(Workspace
 		Workspace/main.cpp
@@ -94,8 +115,15 @@ IF(MAKE_WORKSPACE)
 		DESTINATION ${CMAKE_BINARY_DIR}
 	)
 	
+	file(
+		COPY Workspace/fonts
+		DESTINATION ${CMAKE_BINARY_DIR}
+	)
+	
 	target_link_libraries(Workspace
 		${ALL_GRAPHICS_LIBS}
 	)
+	
+	add_dependencies(Workspace CustomDlls)
 ENDIF()
 

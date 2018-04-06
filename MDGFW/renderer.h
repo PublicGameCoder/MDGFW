@@ -3,19 +3,21 @@
 
 #include <iostream>
 #include <fstream>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <MDGFW\Mathmatics.h>
 #include <MDGFW/camera.h>
 #include <MDGFW/Line.h>
 #include <MDGFW/sprite.h>
-#include <MDGFW/World.h>
+#include <MDGFW/Scene.h>
+#include <MDGFW/SceneManager.h>
 
 class Renderer
 {
 	public:
 		Renderer();
 		virtual ~Renderer();
-		void updateWorld( World* world );
+		void updateWorld( Scene* world );
 
 		GLFWwindow* window() { return _window; };
 
@@ -36,22 +38,12 @@ class Renderer
 		unsigned int _window_width;
 		unsigned int _window_height;
 
-		GLuint loadShaders(
-			const char* vertex_file_path,
-			const char* fragment_file_path
-		);
+		void renderLines( Entity* entity, Vector3 worldPos);
+		void renderEntity( Entity* entity, glm::mat4 modelMatrix);
+		void renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP );
+		void renderText( Shader* shader, Text* text, glm::mat4 MVP );
 
-		void renderLines( Entity* entity );
-		void updateEntity( Entity* entity );
-
-		void renderSprite( Sprite* sprite, Vector3 pos, Vector3 scl, Vector3 rot );
-		void renderSprite( Sprite* sprite, float px, float py, float sx, float sy, float rot );
-
-		GLuint _programID;
-
-		glm::mat4 _projectionMatrix;
-
-		Vector3& toWorldSpace( Entity* owner, Vector3 pos, bool isLocal );
+		void renderMesh( Shader* shader, GLuint VertexID, GLuint UvID, int numverts, GLuint mode );
 };
 
 #endif /* RENDERER_H */

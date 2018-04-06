@@ -5,6 +5,7 @@
 #include <GL\glew.h>
 
 #include <MDGFW\renderer.h>
+#include <MDGFW\SceneManager.h>
 
 class Engine
 {
@@ -12,7 +13,7 @@ public:
 	Engine();
 	virtual ~Engine();
 
-	void run( World* world );
+	void run( Scene* world );
 	GLFWwindow* getWindow() {
 		return _rend.window();
 	}
@@ -26,6 +27,7 @@ public:
 	}
 
 private:
+	SceneManager _sceneManager;
 	Renderer _rend;
 
 	bool _running;

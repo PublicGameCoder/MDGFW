@@ -1,7 +1,7 @@
 #include "MDGFW\Texture.h"
 #include "ResourceManager.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "other/stb_image.h"
+#include "stb/stb_image.h"
 
 Texture::Texture( const std::string &filePath ) {
 	getIDFromData( filePath );
@@ -23,11 +23,36 @@ void Texture::getIDFromData( const std::string &filePath ) {
 	// load image, create texture and generate mipmaps
 	stbi_set_flip_vertically_on_load( true ); // tell stb_image.h to flip loaded texture's on the y-axis.
 											  // The FileSystem::getPath(...) is part of the GitHub repository so we can find files on any IDE/platform; replace it with your own image path.
-	std::cout << "Loading: " << filePath.c_str() << std::endl;
 	unsigned char *data = stbi_load( filePath.c_str(), &_width, &_height, &_nrChannels, 0 );
 	if ( data )
 	{
-		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, data );
+		GLuint format1 = GL_RGB;
+		GLuint format2 = GL_RGB;
+
+		switch ( _nrChannels ) {
+		case 1:
+			format1 = GL_LUMINANCE;
+			format2 = GL_LUMINANCE;
+			break;
+		case 2:
+			format1 = GL_RED;
+			format2 = GL_RGBA;
+			break;
+		case 3:
+			format1 = GL_RGB;
+			format2 = GL_RGB;
+			break;
+		case 4:
+			format1 = GL_RGBA;
+			format2 = GL_RGBA;
+			break;
+		default:
+			format1 = GL_RGB;
+			format2 = GL_RGB;
+			break;
+		}
+
+		glTexImage2D( GL_TEXTURE_2D, 0, format1, _width, _height, 0, format2, GL_UNSIGNED_BYTE, data );
 		glGenerateMipmap( GL_TEXTURE_2D );
 	}
 	else

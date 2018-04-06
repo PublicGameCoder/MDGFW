@@ -1,11 +1,12 @@
 #include <Workspace\StickFigure.h>
 
 StickFigure::StickFigure() : Entity() {
-	this->addSprite( "assets/pencils.tga" );
+	this->addSprite( "assets/container.jpg" );
+	this->scale = Vector3( 1, 1, 1 );
 	
 	line = new Line();
 	line->setWidth( 5.0f );
-	line->setPrecision( 12 );
+	line->setDynamic( true );
 
 	ap = Vector3( MINSWIDTH / 2, MINSHEIGHT / 2, 0.0f ) - position;
 	line->setTo( ap, false);
@@ -15,7 +16,7 @@ StickFigure::StickFigure() : Entity() {
 	tohand = new Line();
 
 	tohand->setWidth( 1.5f );
-	tohand->setPrecision( 12 );
+	tohand->setDynamic( true );
 
 	this->addLine( tohand );
 
@@ -45,11 +46,6 @@ void StickFigure::update() {
 
 	double x = InputManager::getManager()->getMouseX() - position.x;
 	double y = InputManager::getManager()->getMouseY() - position.y;
-	Vector3 mousePos = Vector3( x, y );
-	tohand->setTo( mousePos, false);
-
-	if ( InputManager::getManager()->getMouse( 0 ) ) {
-		line->setTo( mousePos, false );
-		//line->addLocalAnchorPoint( mousePos );
-	}
+	Vector3 mousePos = Vector3( x, y, position.z );
+	tohand->setTo( mousePos, true );
 }

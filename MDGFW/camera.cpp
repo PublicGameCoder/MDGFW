@@ -4,14 +4,24 @@ Camera::Camera() : Entity() {
 	position = Vector3( 0, 0, 5 );// Initial position : on +Z
 	_cursor = glm::vec3( 0, 0, 0 );
 	_speed = 300.0f;
+
+	orthographic();
 }
 
 Camera::~Camera() {
 
 }
 
+void Camera::orthographic() {
+	_projectionMatrix = glm::ortho( 0.0f, ( float ) MINSWIDTH, ( float ) MINSHEIGHT, 0.0f, 0.1f, 100.0f );
+}
+
 glm::mat4 Camera::getViewMatrix(){
 	return _viewMatrix;
+}
+
+glm::mat4 Camera::getProjectionMatrix() {
+	return _projectionMatrix;
 }
 
 glm::vec3 Camera::getCursor(){

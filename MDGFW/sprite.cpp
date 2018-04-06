@@ -5,6 +5,7 @@ Sprite::Sprite(std::string image_path)
 
 	// Load image as texture
 	_texture = ResourceManager::getManager()->getTexture(image_path);
+	_shader = ResourceManager::getManager()->getShader( DEFAULTSPRITESHADERVERTEX, DEFAULTSPRITESHADERFRAGMENT );
 
 	_width = _texture->getWidth();
 	_height = _texture->getHeight();

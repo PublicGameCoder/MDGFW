@@ -12,9 +12,10 @@
 #ifndef VECTORX_H_
 #define VECTORX_H_
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/euler_angles.hpp"
+#include "glm/gtx/matrix_decompose.hpp"
 
 #include <MDGFW\PointX.h>
 
@@ -92,14 +93,32 @@ public:
 	 */
 	VectorX_t<T>(T xx, T yy, T zz);
 	/**
-	 * @brief Creates a Vector_t<T> with endpoint Point_t<T> p
-	 *
-	 * This is an overloaded Vector_t<T> constructor.
-	 *
-	 * @param p
-	 * The position of the Vector_t<T> as a Point.
-	 */
-	VectorX_t<T>(Point_t<T> p);
+	* @brief Creates a Vector_t<T> with endpoint Point_t<T> p
+	*
+	* This is an overloaded Vector_t<T> constructor.
+	*
+	* @param p
+	* The position of the Vector_t<T> as a Point.
+	*/
+	VectorX_t<T>( Point_t<T> p );
+	/**
+	* @brief Creates a Vector_t<T> with endpoint glm::vec2 p
+	*
+	* This is an overloaded Vector_t<T> constructor.
+	*
+	* @param p
+	* The position of the Vector_t<T> as a glm::vector.
+	*/
+	VectorX_t<T>( glm::vec2 p );
+	/**
+	* @brief Creates a Vector_t<T> with endpoint glm::vec3 p
+	*
+	* This is an overloaded Vector_t<T> constructor.
+	*
+	* @param p
+	* The position of the Vector_t<T> as a glm::vector.
+	*/
+	VectorX_t<T>( glm::vec3 p );
 	/**
 	 * @brief Creates a Vector_t<T> with startingpoint begin and endpoint end
 	 *
@@ -478,11 +497,27 @@ VectorX_t<T>::VectorX_t(Point_t<T> begin, Point_t<T> end)
 }
 
 template <class T>
-VectorX_t<T>::VectorX_t(Point_t<T> p)
+VectorX_t<T>::VectorX_t( Point_t<T> p )
 {
-    this->x = p.x;
-    this->y = p.y;
-    this->z = p.z;
+	this->x = p.x;
+	this->y = p.y;
+	this->z = p.z;
+}
+
+template <class T>
+VectorX_t<T>::VectorX_t( glm::vec2 p )
+{
+	this->x = p.x;
+	this->y = p.y;
+	this->z = p.z;
+}
+
+template <class T>
+VectorX_t<T>::VectorX_t( glm::vec3 p )
+{
+	this->x = p.x;
+	this->y = p.y;
+	this->z = p.z;
 }
 
 template <class T>

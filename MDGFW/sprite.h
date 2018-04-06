@@ -16,12 +16,14 @@ class Sprite
 		Texture* texture() { return _texture; };
 		GLuint vertexbuffer() { return _vertexbuffer; };
 		GLuint uvbuffer() { return _uvbuffer; };
+		Shader* getShader() { return _shader; };
 
 		unsigned int width() { return _width; };
 		unsigned int height() { return _height; };
 
 	private:
 
+		Shader* _shader;
 		Texture* _texture;
 		GLuint _vertexbuffer;
 		GLuint _uvbuffer;

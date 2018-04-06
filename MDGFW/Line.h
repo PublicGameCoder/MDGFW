@@ -1,11 +1,12 @@
 #ifndef LINE_H
 #define LINE_H
 
+#include <gl/glew.h>
+
 #include <vector>
 #include <MDGFW\VectorX.h>
 #include <MDGFW\color.h>
-
-class Entity;
+#include <ResourceManager.h>
 
 class Line
 {
@@ -31,10 +32,6 @@ public:
 		_isToLocal = !global;
 	}
 
-	void setParent( Entity* parent ) {
-		_parent = parent;
-	}
-
 	//A line can have up to 9 anchor points.
 	void addLocalAnchorPoint( Vector3 ap ) {
 		_anchorPoints.push_back( ap );
@@ -46,13 +43,6 @@ public:
 
 	void flushAnchors() {
 		_anchorPoints = std::vector<Vector3>();
-	}
-
-	void setPrecision(int precision) {
-		if ( precision < 2 ) {
-			precision = 2;
-		}
-		_precision = precision;
 	}
 
 	float getWidth() {
@@ -70,12 +60,12 @@ public:
 		return _pos2;
 	}
 
-	std::vector<Vector3> getAnchors() {
-		return _anchorPoints;
-	}
+	Shader* getShader() {
+		return _shader;
+	};
 
-	int getPrecision() {
-		return _precision;
+	const std::vector<Vector3> getAnchors() {
+		return _anchorPoints;
 	}
 
 	bool isFromLocal() {
@@ -86,7 +76,29 @@ public:
 		return _isToLocal;
 	}
 
+	void recalculate( Vector3 worldPos );
+
+	GLuint getVBO() {
+		return _vbo;
+	}
+
+	GLuint getUVBO() {
+		return _uvbo;
+	}
+
+	bool isDynamic() {
+		return _dynamic;
+	}
+
+	void setDynamic( bool state ) {
+		_dynamic = state;
+	}
+
 private:
+	Shader* _shader;
+	GLuint _vbo;
+	GLuint _uvbo;
+
 	float _lineWidth;
 	RGBAColor _color;
 
@@ -96,11 +108,9 @@ private:
 	bool _isFromLocal;
 	bool _isToLocal;
 
-	int _precision;
+	bool _dynamic;
 
 	std::vector<Vector3> _anchorPoints;
-
-	Entity* _parent;
 };
 
 #endif // !LINE_H

@@ -61,4 +61,6 @@ void Camera::updateCamera(GLFWwindow* window) {
 		position.toVec3() + _direction, // and looks towards Z
 		_up  // Head is up (set to 0,-1,0 to look upside-down)
 	);
+
+	orthographic();
 }

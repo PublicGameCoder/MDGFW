@@ -45,9 +45,9 @@ int main( void )
 
 	
 	Entity* textObj = new Entity();
-	textObj->position = Vector2( MINSWIDTH / 2, (MINSHEIGHT / 2) + 20 );
+	textObj->position = Vector2( MINSWIDTH / 2, MINSHEIGHT / 2 );
 
-	Text* text1 = new Text( "Test Bericht!" );
+	Text* text1 = new Text( "Test" );
 	textObj->addText( text1 );
 
 	scene2->addChild( textObj );

@@ -26,24 +26,8 @@ public:
 		return _message;
 	}
 
-	FT_Face* getFont() {
-		return _font;
-	}
-
-	std::string getFontPath() {
-		return _fontPath;
-	}
-
 	RGBAColor getColor() {
 		return _color;
-	}
-
-	GLuint getVBO() {
-		return VBO;
-	}
-
-	GLuint getVAO() {
-		return VAO;
 	}
 
 	Shader* getShader() {
@@ -54,22 +38,14 @@ public:
 		return _position;
 	}
 
-	Vector2 getScale() {
-		return _scale;
-	}
-
 private:
-	FT_Face* _font;
-	std::string _fontPath;
-	float _size;
 	std::string _message;
 	RGBAColor _color;
 
 	Shader* _shader;
-	GLuint VAO, VBO;
 
 	Vector2 _position;
-	Vector2 _scale;
+	float _scale;
 
 	int init();
 };

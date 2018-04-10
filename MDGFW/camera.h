@@ -23,8 +23,9 @@ private:
 
 	float _speed; // 300 units / second
 
+	float _FOV;
+	float _nearPlane, _farPlane;
 	void orthographic();
-
 };
 
 #endif

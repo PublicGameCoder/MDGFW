@@ -30,6 +30,12 @@ class Renderer
 
 	private:
 
+		Sprite* _sprite;
+
+
+		Shader* _shader;
+		void temp();
+
 		Camera* _camera;
 
 		int init();
@@ -41,7 +47,7 @@ class Renderer
 		void renderLines( Entity* entity, Vector3 worldPos);
 		void renderEntity( Entity* entity, glm::mat4 modelMatrix);
 		void renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP );
-		void renderText( Shader* shader, Text* text, glm::mat4 MVP );
+		void RenderText( Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color );
 
 		void renderMesh( Shader* shader, GLuint VertexID, GLuint UvID, int numverts, GLuint mode );
 };

@@ -4,7 +4,7 @@ Renderer::Renderer()
 {
 	_window_width = MINSWIDTH;
 	_window_height = MINSHEIGHT;
-
+	_sprite = NULL; 
 	this->init();
 }
 
@@ -27,8 +27,14 @@ int Renderer::init()
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 1 );
 	glfwWindowHint( GLFW_RESIZABLE, false );//Can the user resize the window or not?
 
+	GLFWmonitor* primaryMonitor = nullptr;
+
+	if ( FULLSCREEN ) {
+		primaryMonitor = glfwGetPrimaryMonitor();
+	}
+
 	// Open a window and create its OpenGL context
-	_window = glfwCreateWindow( _window_width, _window_height, TITLE, nullptr, nullptr );
+	_window = glfwCreateWindow( _window_width, _window_height, TITLE, primaryMonitor, nullptr );
 	if ( _window == NULL ) {
 		fprintf( stderr, "Failed to open GLFW window.\n" );
 		glfwTerminate();
@@ -36,17 +42,19 @@ int Renderer::init()
 	}
 	glfwMakeContextCurrent( _window );
 
+	glewExperimental = GL_TRUE;
+
 	// Initialize GLEW
 	if ( glewInit() != GLEW_OK ) {
 		fprintf( stderr, "Failed to initialize GLEW\n" );
 		return -1;
 	}
 
+	glViewport( 0, 0, _window_width, _window_height );
+
 	ResourceManager::getManager();//Calling it ones for instantiating
 
 	useVSYNC( VSYNC );
-
-	GLFWmonitor* primary = glfwGetPrimaryMonitor();
 
 	//Use when user is able to resize (this restricts the user's window size between 2 values on the x and y (WINDOW,MINX,MINY,MAXX,MAXY))
 	//glfwSetWindowSizeLimits( _window, MINSWIDTH, MINSHEIGHT, MINSWIDTH, MINSHEIGHT );
@@ -63,14 +71,116 @@ int Renderer::init()
 	//glDepthFunc(GL_LESS);
 
 	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	_camera = new Camera();
-
+	temp();
 	return 0;
 }
 
+/// Holds all state information relevant to a character as loaded using FreeType
+struct Character {
+	GLuint TextureID;   // ID handle of the glyph texture
+	glm::ivec2 Size;    // Size of glyph
+	glm::ivec2 Bearing;  // Offset from baseline to left/top of glyph
+	GLuint Advance;    // Horizontal offset to advance to next glyph
+};
+
+std::map<GLchar, Character> Characters;
+GLuint VAO, VBO;
+
+void Renderer::temp() {
+
+	glEnable( GL_CULL_FACE );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+	_shader = ResourceManager::getManager()->getShader( DEFAULTTEXTSHADERVERTEX, DEFAULTTEXTSHADERFRAGMENT );
+	glm::mat4 projection = glm::ortho( 0.0f, static_cast<GLfloat>(_window_width), 0.0f, static_cast<GLfloat>(_window_height) );
+	_shader->use();
+	glUniformMatrix4fv( glGetUniformLocation( _shader->getID(), "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
+
+	// FreeType
+	FT_Library ft;
+	// All functions return a value different than 0 whenever an error occurred
+	if ( FT_Init_FreeType( &ft ) )
+		std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+
+	// Load font as face
+	FT_Face face;
+	if ( FT_New_Face( ft, "fonts/arial.ttf", 0, &face ) )
+		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+
+	std::cout << "Font: fonts/arial.ttf" << std::endl;
+
+	// Set size to load glyphs as
+	FT_Set_Pixel_Sizes( face, 0, 48 );
+
+	// Disable byte-alignment restriction
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+
+	// Load first 128 characters of ASCII set
+	for ( GLubyte c = 0; c < 128; c++ )
+	{
+		// Load character glyph 
+		if ( FT_Load_Char( face, c, FT_LOAD_RENDER ) )
+		{
+			std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+			continue;
+		}
+		// Generate texture
+		GLuint texture;
+		glGenTextures( 1, &texture );
+		glBindTexture( GL_TEXTURE_2D, texture );
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RED,
+			face->glyph->bitmap.width,
+			face->glyph->bitmap.rows,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			face->glyph->bitmap.buffer
+		);
+		// Set texture options
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		// Now store character for later use
+		Character character = {
+			texture,
+			glm::ivec2( face->glyph->bitmap.width, face->glyph->bitmap.rows ),
+			glm::ivec2( face->glyph->bitmap_left, face->glyph->bitmap_top ),
+			face->glyph->advance.x
+		};
+		Characters.insert( std::pair<GLchar, Character>( c, character ) );
+	}
+	glBindTexture( GL_TEXTURE_2D, 0 );
+	// Destroy FreeType once we're finished
+	FT_Done_Face( face );
+	FT_Done_FreeType( ft );
+
+
+	// Configure VAO/VBO for texture quads
+	glGenVertexArrays( 1, &VAO );
+	glGenBuffers( 1, &VBO );
+	glBindVertexArray( VAO );
+	glBindBuffer( GL_ARRAY_BUFFER, VBO );
+	glBufferData( GL_ARRAY_BUFFER, sizeof( GLfloat ) * 6 * 4, NULL, GL_DYNAMIC_DRAW );
+	glEnableVertexAttribArray( 0 );
+	glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof( GLfloat ), 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	glBindVertexArray( 0 );
+}
+
 void Renderer::updateWorld( Scene* world ) {
+
+	if ( _sprite == NULL ) {
+		_sprite = new Sprite( "assets/wall.jpg" );
+	}
+
 	// Clear the screen
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -123,7 +233,9 @@ void Renderer::renderEntity( Entity* entity, glm::mat4 modelMatrix) {
 	renderLines( entity, Vector3(realpos));
 
 	for each (Text* text in entity->getTexts()) {
-		renderText( text->getShader(), text, MVP );
+		
+		RenderText( _shader, "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        RenderText( _shader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 	}
 
 	if ( sprite != nullptr ) {
@@ -185,34 +297,25 @@ void Renderer::renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP )
 
 	this->renderMesh(sprite->getShader(), sprite->vertexbuffer(), sprite->uvbuffer(), 6, GL_TRIANGLES );
 }
-
-void Renderer::renderText(Shader* shader, Text* text, glm::mat4 MVP )
-{	
+void Renderer::RenderText( Shader* shader, std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color )
+{
+	// Activate corresponding render state	
 	shader->use();
-	std::cout << "Loading text: ";
-	RGBAColor color = text->getColor();
-	glUniform3f( glGetUniformLocation( shader->getID(), "textColor" ), color.r, color.g, color.b );
-	glUniformMatrix4fv( glGetUniformLocation( shader->getID(), "projection" ), 1, GL_FALSE, glm::value_ptr( _camera->getProjectionMatrix() ) );
+	glUniform3f( glGetUniformLocation( shader->getID() , "textColor" ), color.x, color.y, color.z );
 	glActiveTexture( GL_TEXTURE0 );
-	glBindVertexArray( text->getVAO() );
+	glBindVertexArray( VAO );
 
 	// Iterate through all characters
 	std::string::const_iterator c;
-	std::string message = text->getMessage();
-	Vector2 pos = text->getPosition();
-	Vector2 scale = text->getScale();
-	for ( c = message.begin(); c != message.end(); c++ )
+	for ( c = text.begin(); c != text.end(); c++ )
 	{
-		Character* chara = ResourceManager::getManager()->getFontChars( text->getFont() )[*c];
-		std::cout << chara->Glyph;
-		std::cout << "" << *c << "";
-		Character ch = *chara;
+		Character ch = Characters[*c];
 
-		GLfloat xpos = pos.x + ch.Bearing.x * scale.x;
-		GLfloat ypos = pos.y - (ch.Size.y - ch.Bearing.y) * scale.y;
+		GLfloat xpos = x + ch.Bearing.x * scale;
+		GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
-		GLfloat w = ch.Size.x * scale.x;
-		GLfloat h = ch.Size.y * scale.y;
+		GLfloat w = ch.Size.x * scale;
+		GLfloat h = ch.Size.y * scale;
 		// Update VBO for each character
 		GLfloat vertices[6][4] = {
 			{ xpos,     ypos + h,   0.0, 0.0 },
@@ -226,16 +329,15 @@ void Renderer::renderText(Shader* shader, Text* text, glm::mat4 MVP )
 		// Render glyph texture over quad
 		glBindTexture( GL_TEXTURE_2D, ch.TextureID );
 		// Update content of VBO memory
-		glBindBuffer( GL_ARRAY_BUFFER, text->getVBO() );
+		glBindBuffer( GL_ARRAY_BUFFER, VBO );
 		glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof( vertices ), vertices ); // Be sure to use glBufferSubData and not glBufferData
 
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		// Render quad
 		glDrawArrays( GL_TRIANGLES, 0, 6 );
 		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-		pos.x += (ch.Advance >> 6) * scale.x; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+		x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 	}
-	std::cout << std::endl;
 	glBindVertexArray( 0 );
 	glBindTexture( GL_TEXTURE_2D, 0 );
 }

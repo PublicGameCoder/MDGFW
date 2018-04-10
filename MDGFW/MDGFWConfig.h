@@ -4,6 +4,8 @@
 #define MINSWIDTH 1280
 #define MINSHEIGHT 720
 
+#define FULLSCREEN false
+
 #define TITLE "MDGFW"
 
 #define VSYNC true

@@ -90,7 +90,8 @@ add_library(MDGFW
 	MDGFW/Texture.h
 	MDGFW/Text.cpp
 	MDGFW/Text.h
-	
+	MDGFW/Canvas.cpp
+	MDGFW/Canvas.h
 )
 file(
 	COPY MDGFW/shaders

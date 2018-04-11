@@ -47,16 +47,26 @@ int main( void )
 	Entity* textObj = new Entity();
 	textObj->position = Vector2( MINSWIDTH / 2, MINSHEIGHT / 2 );
 
-	Text* text1 = new Text( "Test" );
+	Text* text1 = new Text( "MDGFW" );
+	text1->setPosition( MINSWIDTH / 2 - 25.0f, MINSHEIGHT - 50.0f );
+
 	textObj->addText( text1 );
 
-	scene2->addChild( textObj );
+	scene1->addChild( textObj );
 
 	SceneManager::addScene( scene1 );
 	SceneManager::addScene( scene2 );
 
 	do {
 		engine.run( nullptr );
+
+		if ( InputManager::getManager()->getKey( KeyCode::Space ) ) {
+			text1->setFont( "fonts/PressStart2P-Regular.ttf" );
+		}
+		else {
+			text1->setFont( DEFAULTFONT );
+		}
+
 	} // Check if the ESC key was pressed or the window was closed
 	while( engine.isRunning() || !glfwWindowShouldClose(engine.getWindow()) == 0 );
 

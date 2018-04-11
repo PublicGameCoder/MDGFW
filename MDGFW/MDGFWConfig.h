@@ -12,8 +12,8 @@
 
 #define DEFAULTFONT "fonts/arial.ttf"
 
-#define DEFAULTSPRITESHADERVERTEX "shaders/sprite.vert"
-#define DEFAULTSPRITESHADERFRAGMENT "shaders/sprite.frag"
+#define DEFAULTSPRITESHADERVERTEX "shaders/mesh.vert"
+#define DEFAULTSPRITESHADERFRAGMENT "shaders/mesh.frag"
 
 #define DEFAULTTEXTSHADERVERTEX "shaders/text.vert"
 #define DEFAULTTEXTSHADERFRAGMENT "shaders/text.frag"

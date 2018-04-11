@@ -18,7 +18,6 @@ public:
 		_message = message;
 	}
 
-	void setFontSize( float size );
 	void setFont( std::string path );
 	void setColor( RGBAColor color );
 
@@ -38,7 +37,34 @@ public:
 		return _position;
 	}
 
+	GLfloat getScale() {
+		return _scale;
+	}
+
+	GLuint getVAO() {
+		return VAO;
+	}
+
+	GLuint getVBO() {
+		return VBO;
+	}
+
+	std::map<GLchar, Character> getCharacters() {
+		return _fontChars;
+	}
+
+	void setPosition( float x, float y ) {
+		setPosition( Vector2( x, y ) );
+	}
+
+	void setPosition( Vector2 position ) {
+		this->_position = position;
+	}
+
 private:
+	std::map<GLchar, Character> _fontChars;
+	GLuint VAO, VBO;
+
 	std::string _message;
 	RGBAColor _color;
 
@@ -48,6 +74,8 @@ private:
 	float _scale;
 
 	int init();
+	void setupShader();
+	void generateQuad();
 };
 
 #endif // !TEXT_H

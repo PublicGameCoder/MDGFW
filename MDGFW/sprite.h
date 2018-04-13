@@ -5,7 +5,8 @@
 
 #include <iostream>
 
-#include "MDGFW\ResourceManager.h"
+#include <MDGFW\Mesh.h>
+#include <MDGFW\ResourceManager.h>
 
 class Sprite
 {
@@ -13,23 +14,21 @@ class Sprite
 		Sprite(std::string image_path);
 		virtual ~Sprite();
 
-		Texture* texture() { return _texture; };
-		GLuint vertexbuffer() { return _vertexbuffer; };
-		GLuint uvbuffer() { return _uvbuffer; };
+		Texture* getTexture() { return _texture; };
 		Shader* getShader() { return _shader; };
+		Mesh* getMesh() { return _mesh; };
 
-		unsigned int width() { return _width; };
-		unsigned int height() { return _height; };
+		unsigned int getWidth() { return _width; };
+		unsigned int getHeight() { return _height; };
 
 	private:
 
 		Shader* _shader;
 		Texture* _texture;
-		GLuint _vertexbuffer;
-		GLuint _uvbuffer;
+		Mesh* _mesh;
 
-		unsigned int _width;
-		unsigned int _height;
+		GLuint _width;
+		GLuint _height;
 };
 
 #endif /* SPRITE_H */

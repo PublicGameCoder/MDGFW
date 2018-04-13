@@ -2,7 +2,7 @@
 
 Line::Line() {
 
-	_shader = ResourceManager::getManager()->getShader( DEFAULTSPRITESHADERVERTEX, DEFAULTSPRITESHADERFRAGMENT );
+	_shader = ResourceManager::getManager()->getShader( DEFAULTMESHSHADERVERTEX, DEFAULTMESHSHADERFRAGMENT );
 
 	_lineWidth = 2.5f;
 	_color = RGBAColor(255,255,255,255);

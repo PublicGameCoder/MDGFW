@@ -12,10 +12,16 @@
 
 #define DEFAULTFONT "fonts/arial.ttf"
 
-#define DEFAULTSPRITESHADERVERTEX "shaders/mesh.vert"
-#define DEFAULTSPRITESHADERFRAGMENT "shaders/mesh.frag"
+#define DEFAULTMESHSHADERVERTEX "shaders/mesh.vert"
+#define DEFAULTMESHSHADERFRAGMENT "shaders/mesh.frag"
+
+/*
+#define DEFAULTTEXTSHADERVERTEX "shaders/text2.vert"
+#define DEFAULTTEXTSHADERFRAGMENT "shaders/text2.frag"
+*/
 
 #define DEFAULTTEXTSHADERVERTEX "shaders/text.vert"
 #define DEFAULTTEXTSHADERFRAGMENT "shaders/text.frag"
+
 
 #endif // !MDGFWCONFIG_H

@@ -11,9 +11,14 @@
 class Shader
 {
 public:
+	static GLuint activeID;
 
 	GLuint getID() {
 		return _programID;
+	}
+
+	bool isActive() {
+		return (activeID == _programID);
 	}
 
 	// constructor generates the shader on the fly
@@ -78,6 +83,7 @@ public:
 	// ------------------------------------------------------------------------
 	void use()
 	{
+		activeID = _programID;
 		glUseProgram( _programID );
 	}
 	// utility uniform functions

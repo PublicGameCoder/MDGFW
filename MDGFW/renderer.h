@@ -38,12 +38,15 @@ class Renderer
 		unsigned int _window_width;
 		unsigned int _window_height;
 
+		void Renderer::setObjectTransform( Shader* shader, glm::mat4 MVP );
+		void Renderer::setCurrentTexture( Shader* shader, Texture* texture );
+
 		void renderLines( Entity* entity, Vector3 worldPos);
 		void renderEntity( Entity* entity, glm::mat4 modelMatrix);
 		void renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP );
-		void RenderText( Text* text );
+		void RenderText( Text* text, glm::mat4 MVP );
 
-		void renderMesh( Shader* shader, GLuint VertexID, GLuint UvID, int numverts, GLuint mode );
+		void renderMesh( Shader* shader, Mesh* mesh, GLuint mode );
 };
 
 #endif /* RENDERER_H */

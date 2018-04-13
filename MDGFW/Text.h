@@ -1,12 +1,10 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include "MDGFW\MDGFWConfig.h"
-#include "MDGFW\ResourceManager.h"
-#include <MDGFW\VectorX.h>
-#include <MDGFW\color.h>
+#include <MDGFW\UIElement.h>
+#include <MDGFW\Mesh.h>
 
-class Text
+class Text : public UIElement
 {
 public:
 	Text();
@@ -33,12 +31,16 @@ public:
 		return _shader;
 	};
 
-	Vector2 getPosition() {
-		return _position;
+	Mesh* getMesh() {
+		return _mesh;
 	}
 
 	GLfloat getScale() {
 		return _scale;
+	}
+
+	std::map<GLchar, Character> getCharacters() {
+		return _fontChars;
 	}
 
 	GLuint getVAO() {
@@ -49,33 +51,22 @@ public:
 		return VBO;
 	}
 
-	std::map<GLchar, Character> getCharacters() {
-		return _fontChars;
-	}
-
-	void setPosition( float x, float y ) {
-		setPosition( Vector2( x, y ) );
-	}
-
-	void setPosition( Vector2 position ) {
-		this->_position = position;
-	}
-
 private:
 	std::map<GLchar, Character> _fontChars;
-	GLuint VAO, VBO;
 
 	std::string _message;
 	RGBAColor _color;
 
 	Shader* _shader;
+	Mesh* _mesh;
 
-	Vector2 _position;
 	float _scale;
 
 	int init();
 	void setupShader();
 	void generateQuad();
+
+	GLuint VAO, VBO;
 };
 
 #endif // !TEXT_H

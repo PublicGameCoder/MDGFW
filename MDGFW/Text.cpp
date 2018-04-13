@@ -1,20 +1,22 @@
 #include "MDGFW\Text.h"
 
-Text::Text() {
+Text::Text() : UIElement() {
 	_message = "No text assigned!";
 	_shader = nullptr;
 	_color = WHITE;
-	_position = Vector2();
+	this->setPosition( 0, 0 );
 	_scale = 1.0f;
+	_mesh = new Mesh();
 	init();
 }
 
-Text::Text(std::string txt) {
+Text::Text(std::string txt) : UIElement() {
 	_message = txt;
 	_shader = nullptr;
 	_color = WHITE;
-	_position = Vector2();
+	this->setPosition( 0, 0 );
 	_scale = 1.0f;
+	_mesh = new Mesh();
 	init();
 }
 
@@ -25,18 +27,8 @@ Text::~Text() {
 int Text::init() {
 	_fontChars = ResourceManager::getManager()->getFontChars( DEFAULTFONT );
 	setupShader();
-	generateQuad();
-	return 0;
-}
+	_mesh->genTextMesh();
 
-void Text::setupShader() {
-	_shader = ResourceManager::getManager()->getShader( DEFAULTTEXTSHADERVERTEX, DEFAULTTEXTSHADERFRAGMENT );
-	glm::mat4 projection = glm::ortho( 0.0f, static_cast<GLfloat>(MINSWIDTH), 0.0f, static_cast<GLfloat>(MINSHEIGHT) );
-	_shader->use();
-	glUniformMatrix4fv( glGetUniformLocation( _shader->getID(), "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
-}
-
-void Text::generateQuad() {
 	// Configure VAO/VBO for texture quads
 	glGenVertexArrays( 1, &VAO );
 	glGenBuffers( 1, &VBO );
@@ -47,6 +39,15 @@ void Text::generateQuad() {
 	glVertexAttribPointer( 0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof( GLfloat ), 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
 	glBindVertexArray( 0 );
+
+	return 0;
+}
+
+void Text::setupShader() {
+	_shader = ResourceManager::getManager()->getShader( DEFAULTTEXTSHADERVERTEX, DEFAULTTEXTSHADERFRAGMENT );
+	glm::mat4 projection = glm::ortho( 0.0f, static_cast< GLfloat >(MINSWIDTH), 0.0f, static_cast< GLfloat >(MINSHEIGHT), 0.0f, 100.0f );
+	_shader->use();
+	glUniformMatrix4fv( glGetUniformLocation( _shader->getID(), "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
 }
 
 void Text::setFont( std::string path ) {

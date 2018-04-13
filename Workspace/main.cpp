@@ -48,7 +48,7 @@ int main( void )
 	textObj->position = Vector2( MINSWIDTH / 2, MINSHEIGHT / 2 );
 
 	Text* text1 = new Text( "MDGFW" );
-	text1->setPosition( MINSWIDTH / 2 - 25.0f, MINSHEIGHT - 50.0f );
+	text1->setPosition( 50 , 50 );
 
 	textObj->addText( text1 );
 
@@ -66,6 +66,10 @@ int main( void )
 		else {
 			text1->setFont( DEFAULTFONT );
 		}
+
+		float mouseX = InputManager::getManager()->getMouseX();
+		float mouseY = InputManager::getManager()->getMouseY();
+		text1->setPosition( mouseX, mouseY );
 
 	} // Check if the ESC key was pressed or the window was closed
 	while( engine.isRunning() || !glfwWindowShouldClose(engine.getWindow()) == 0 );

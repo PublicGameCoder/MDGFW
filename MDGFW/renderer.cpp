@@ -134,7 +134,7 @@ void Renderer::renderEntity( Entity* entity, glm::mat4 modelMatrix) {
 	renderLines( entity, Vector3(realpos));
 
 	for each (Text* text in entity->getTexts()) {
-		RenderText( text );
+		RenderText( text, MVP);
 	}
 
 	if ( sprite != nullptr ) {
@@ -147,67 +147,53 @@ void Renderer::renderEntity( Entity* entity, glm::mat4 modelMatrix) {
 }
 
 void Renderer::renderLines( Entity* entity, Vector3 worldPos) {
-	if ( entity->getLines().size() <= 0 ) {
-		return;
-	}
-
-	float lineWidth;
-	RGBAColor color;
-	Vector3 from;
-	Vector3 to;
-	Vector3 fromGlobal;
-	Vector3 toGlobal;
-
-	for each (Line* line in entity->getLines()) {
-
-		line->getShader()->use();
-
-		lineWidth = line->getWidth();
-		color = line->getColor();
-
-		glLineWidth( lineWidth );
-
-		if (line->isDynamic()) {
-			line->recalculate( worldPos );
-		}
-
-		int numverts = line->getAnchors().size() * 3;
-		numverts += 6;
-
-		this->renderMesh( line->getShader(),line->getVBO(), line->getUVBO(), numverts, GL_LINES );
-	}
+	//TODO Create line rendering implementation
 }
 
 void Renderer::renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP )
 {
 	shader->use();
 
-	// Send our transformation to the currently bound shader,
-	// in the "MVP" uniform
-	GLuint matrixID = glGetUniformLocation( shader->getID(), "MVP" );
-	glUniformMatrix4fv( matrixID, 1, GL_FALSE, &MVP[0][0] );
+	setObjectTransform( shader, MVP );
 
-	// Bind our texture in Texture Unit 0
-	glActiveTexture( GL_TEXTURE0 );
-	glBindTexture( GL_TEXTURE_2D, sprite->texture()->getID() );
-	// Set our "myTextureSampler" sampler to user Texture Unit 0
-	GLuint textureID = glGetUniformLocation( shader->getID(), "myTextureSampler" );
-	glUniform1i( textureID, 0 );
+	setCurrentTexture( shader, sprite->getTexture() );
 
-	this->renderMesh(sprite->getShader(), sprite->vertexbuffer(), sprite->uvbuffer(), 6, GL_TRIANGLES );
+	this->renderMesh(sprite->getShader(), sprite->getMesh(), GL_TRIANGLES );
 }
-void Renderer::RenderText( Text* text )
-{
-	Vector2 pos = text->getPosition();
 
-	GLfloat x = text->getPosition().x;
-	GLfloat y = text->getPosition().y;
+void Renderer::setCurrentTexture( Shader* shader, Texture* texture ) {
+	if ( shader->isActive() ) {
+		// Bind our texture in Texture Unit 0
+		glActiveTexture( GL_TEXTURE0 );
+		glBindTexture( GL_TEXTURE_2D, texture->getID() );
+		// Set our "myTextureSampler" sampler to user Texture Unit 0
+		GLuint textureID = glGetUniformLocation( shader->getID(), "myTextureSampler" );
+		glUniform1i( textureID, 0 );
+	}
+}
+
+void Renderer::setObjectTransform( Shader* shader, glm::mat4 MVP) {
+	if ( shader->isActive() ) {
+		// Send our transformation to the currently bound shader,
+		// in the "MVP" uniform
+		GLuint matrixID = glGetUniformLocation( shader->getID(), "MVP" );
+		glUniformMatrix4fv( matrixID, 1, GL_FALSE, &MVP[0][0] );
+	}
+}
+
+void Renderer::RenderText( Text* text, glm::mat4 MVP )
+{
+	Vector2 pos = text->getCanvasPosition();
+
+	GLfloat x = pos.x;
+	GLfloat y = pos.y;
 	GLfloat scale = text->getScale();
 	RGBAColor color = text->getColor();
+	Mesh* mesh = text->getMesh();
 
 	// Activate corresponding render state	
 	text->getShader()->use();
-	glUniform3f( glGetUniformLocation( text->getShader()->getID() , "textColor" ), color.r, color.g, color.b );
+	glUniform3f( glGetUniformLocation( text->getShader()->getID(), "textColor" ), color.r, color.g, color.b );
 	glActiveTexture( GL_TEXTURE0 );
 	glBindVertexArray( text->getVAO() );
 
@@ -252,11 +238,11 @@ void Renderer::RenderText( Text* text )
 	glBindTexture( GL_TEXTURE_2D, 0 );
 }
 
-void Renderer::renderMesh(Shader* shader, GLuint VertexID, GLuint UvID, int numverts, GLuint mode) {
+void Renderer::renderMesh(Shader* shader, Mesh* mesh, GLuint mode) {
 	// 1st attribute buffer : vertices
 	GLuint vertexPosition_modelspaceID = glGetAttribLocation( shader->getID(), "vertexPosition_modelspace" );
 	glEnableVertexAttribArray( vertexPosition_modelspaceID );
-	glBindBuffer( GL_ARRAY_BUFFER, VertexID );
+	glBindBuffer( GL_ARRAY_BUFFER, mesh->getVertexBuffer() );
 	glVertexAttribPointer(
 		vertexPosition_modelspaceID,  // The attribute we want to configure
 		3,							// size : x+y+z => 3
@@ -269,7 +255,7 @@ void Renderer::renderMesh(Shader* shader, GLuint VertexID, GLuint UvID, int numv
 	// 2nd attribute buffer : UVs
 	GLuint vertexUVID = glGetAttribLocation( shader->getID(), "vertexUV" );
 	glEnableVertexAttribArray( vertexUVID );
-	glBindBuffer( GL_ARRAY_BUFFER, UvID );
+	glBindBuffer( GL_ARRAY_BUFFER, mesh->getUVBuffer() );
 	glVertexAttribPointer(
 		vertexUVID,				   // The attribute we want to configure
 		2,							// size : U+V => 2
@@ -279,8 +265,8 @@ void Renderer::renderMesh(Shader* shader, GLuint VertexID, GLuint UvID, int numv
 		( void* ) 0					  // array buffer offset
 	);
 
-	// Draw the triangles !
-	glDrawArrays( mode, 0, numverts );
+	// Draw the triangles!
+	glDrawArrays( mode, 0, mesh->getVertices() );
 
 	glDisableVertexAttribArray( vertexPosition_modelspaceID );
 	glDisableVertexAttribArray( vertexUVID );

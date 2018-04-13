@@ -67,6 +67,7 @@ add_library(MDGFW
 	MDGFW/Engine.cpp
 	MDGFW/Engine.h
 	MDGFW/MDGFWConfig.h
+	MDGFW/Shader.cpp
 	MDGFW/Shader.h
 	MDGFW/Scene.cpp
 	MDGFW/Scene.h
@@ -92,6 +93,10 @@ add_library(MDGFW
 	MDGFW/Text.h
 	MDGFW/Canvas.cpp
 	MDGFW/Canvas.h
+	MDGFW/UIElement.cpp
+	MDGFW/UIElement.h
+	MDGFW/Mesh.cpp
+	MDGFW/Mesh.h
 )
 file(
 	COPY MDGFW/shaders

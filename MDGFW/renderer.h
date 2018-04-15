@@ -41,7 +41,7 @@ class Renderer
 		void Renderer::setObjectTransform( Shader* shader, glm::mat4 MVP );
 		void Renderer::setCurrentTexture( Shader* shader, Texture* texture );
 
-		void renderLines( Entity* entity, Vector3 worldPos);
+		void renderLines( Entity* entity);
 		void renderEntity( Entity* entity, glm::mat4 modelMatrix);
 		void renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP );
 		void RenderText( Text* text, glm::mat4 MVP );

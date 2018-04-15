@@ -27,8 +27,6 @@ int main( void )
 	rgba->scale = Vector2( 1, 1, 1 );
 	rgba->rotation = Vector3();
 
-	
-	//Not working. (Render Issue)
 	StickFigure* stickFigure = new StickFigure();
 	stickFigure->position = Vector2( 400, 300 );
 	stickFigure->scale = Vector2( 1, 1, 1 );

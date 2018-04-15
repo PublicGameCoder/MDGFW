@@ -131,7 +131,7 @@ void Renderer::renderEntity( Entity* entity, glm::mat4 modelMatrix) {
 		renderSprite( sprite->getShader(), sprite, MVP );
 	}
 
-	renderLines( entity, Vector3(realpos));
+	renderLines( entity );
 
 	for each (Text* text in entity->getTexts()) {
 		RenderText( text, MVP);
@@ -146,8 +146,37 @@ void Renderer::renderEntity( Entity* entity, glm::mat4 modelMatrix) {
 	}
 }
 
-void Renderer::renderLines( Entity* entity, Vector3 worldPos) {
-	//TODO Create line rendering implementation
+void Renderer::renderLines( Entity* entity ) {
+	float lineWidth;
+	RGBAColor color;
+	Vector3 fromLocal;
+	Vector3 toLocal;
+	Vector3 fromGlobal;
+	Vector3 toGlobal;
+
+	for each (Line* line in entity->getLines()) {
+
+		lineWidth = line->getWidth();
+		color = line->getColor();
+
+		//Model position
+		fromLocal = line->getFrom();
+		toLocal = line->getTo();
+
+		//World position
+		fromGlobal = fromLocal + entity->getWorldPosition();
+		toGlobal = toLocal + entity->getWorldPosition();
+
+		glLineWidth( lineWidth );
+		glColor3f( color.r, color.g, color.b );
+
+		glBegin( GL_LINES );
+
+		glVertex3f( fromGlobal.x, fromGlobal.y, fromGlobal.z );
+		glVertex3f( toGlobal.x, toGlobal.y, toGlobal.z );
+
+		glEnd();
+	}
 }
 
 void Renderer::renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP )

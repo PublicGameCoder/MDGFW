@@ -20,7 +20,8 @@ public:
 	}
 
 	void GenQuadMesh( GLuint _width, GLuint _height, GLuint drawMode);
-	void Mesh::genTextMesh();
+	void genTextMesh();
+
 private:
 	GLuint _vertexbuffer;
 	GLuint _uvbuffer;

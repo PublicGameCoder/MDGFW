@@ -1,5 +1,3 @@
-#include <Workspace\RGBAObj.h>
-#include <Workspace\StickFigure.h>
 #include <MDGFW/Engine.h>
 
 int main( void )
@@ -21,27 +19,12 @@ int main( void )
 	kingkong->scale = Vector2( 1, 1, 1 );
 	kingkong->rotation = Vector3();
 
-	RGBAObj* rgba = new RGBAObj();
-	rgba->addSprite( "assets/rgba.tga" );
-	rgba->position = Vector2( MINSWIDTH / 2, MINSHEIGHT / 2 );
-	rgba->scale = Vector2( 1, 1, 1 );
-	rgba->rotation = Vector3();
-
-	StickFigure* stickFigure = new StickFigure();
-	stickFigure->position = Vector2( 400, 300 );
-	stickFigure->scale = Vector2( 1, 1, 1 );
-	stickFigure->rotation = Vector3();
-	
-
 	scene1->addChild( pencils );
 	scene1->addChild( kingkong );
-	scene1->addChild( rgba );
-	scene1->addChild( stickFigure );
 
 	//World 2
 	Scene* scene2 = new Scene();
 
-	
 	Entity* textObj = new Entity();
 	textObj->position = Vector2( MINSWIDTH / 2, MINSHEIGHT / 2 );
 

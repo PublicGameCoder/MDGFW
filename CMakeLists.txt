@@ -111,9 +111,6 @@ file(
 IF(MAKE_WORKSPACE)
 	add_executable(Workspace
 		Workspace/main.cpp
-		Workspace/RGBAObj.h
-		Workspace/StickFigure.cpp
-		Workspace/StickFigure.h
 	)
 	
 	file(

@@ -64,7 +64,6 @@ private:
 
 	int init();
 	void setupShader();
-	void generateQuad();
 
 	GLuint VAO, VBO;
 };

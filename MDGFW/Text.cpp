@@ -45,7 +45,7 @@ int Text::init() {
 
 void Text::setupShader() {
 	_shader = ResourceManager::getManager()->getShader( DEFAULTTEXTSHADERVERTEX, DEFAULTTEXTSHADERFRAGMENT );
-	glm::mat4 projection = glm::ortho( 0.0f, static_cast< GLfloat >(MINSWIDTH), 0.0f, static_cast< GLfloat >(MINSHEIGHT), 0.0f, 100.0f );
+	glm::mat4 projection = glm::ortho( 0.0f, ( float ) MINSWIDTH, ( float ) MINSHEIGHT, 0.0f, 0.0f, 100.0f );
 	_shader->use();
 	glUniformMatrix4fv( glGetUniformLocation( _shader->getID(), "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
 }

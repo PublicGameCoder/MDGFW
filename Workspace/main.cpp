@@ -51,6 +51,7 @@ int main( void )
 		float mouseX = InputManager::getManager()->getMouseX();
 		float mouseY = InputManager::getManager()->getMouseY();
 		text1->setPosition( mouseX, mouseY );
+		std::cout << text1->getCanvasPosition().x << " | " << text1->getCanvasPosition().y << std::endl;
 
 	} // Check if the ESC key was pressed or the window was closed
 	while( engine.isRunning() || !glfwWindowShouldClose(engine.getWindow()) == 0 );

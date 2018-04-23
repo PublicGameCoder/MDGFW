@@ -5,7 +5,6 @@
 
 #include <iostream>
 
-#include <MDGFW\Mesh.h>
 #include <MDGFW\ResourceManager.h>
 
 class Sprite
@@ -20,12 +19,12 @@ class Sprite
 
 		unsigned int getWidth() { return _width; };
 		unsigned int getHeight() { return _height; };
-
+		Mesh* _mesh;
 	private:
 
 		Shader* _shader;
 		Texture* _texture;
-		Mesh* _mesh;
+		//Mesh* _mesh;
 
 		GLuint _width;
 		GLuint _height;

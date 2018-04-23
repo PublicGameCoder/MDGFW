@@ -75,6 +75,10 @@ Vector3 Entity::getWorldPosition() {
 	return _worldPosition;
 }
 
+Animator* Entity::getAnimator() {
+	return _animator;
+}
+
 void Entity::flushSprite() {
 	if ( this->_sprite != NULL ) {
 		delete this->_sprite;

@@ -61,26 +61,25 @@ int Renderer::init()
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
 
-	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
 	// Enable depth test
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
-	//glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LESS);
 
 	// Cull triangles which normal is not towards the camera
-	glEnable( GL_CULL_FACE );
+	//glEnable( GL_CULL_FACE );
 
 	// Blend textures so alpha channels work.
 	glEnable( GL_BLEND );
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
+	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
 	_camera = new Camera();
 	return 0;
 }
 
-void Renderer::updateWorld( Scene* world ) {
+void Renderer::updateWorld( Scene* scene ) {
 
 	// Clear the screen
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -91,7 +90,23 @@ void Renderer::updateWorld( Scene* world ) {
 	//printf("(%f,%f)\n",cursor.x, cursor.y);
 
 	glm::mat4 modelMatrix = glm::mat4( 1.0f );
-	renderEntity( world, modelMatrix);
+	renderEntity( scene, modelMatrix);
+	glClearColor( 0.0f, 0.0f, 0.4f, 0.0f );
+	Skybox* skybox = scene->getSkybox();
+	if ( skybox != nullptr && true ) {
+		glDepthFunc( GL_LEQUAL );  // change depth function so depth test passes when values are equal to depth buffer's content
+		skybox->getShader()->use();
+		glm::mat4 view = glm::mat4( glm::mat3( _camera->getViewMatrix() ) ); // remove translation from the view matrix
+		skybox->getShader()->setMat4( "view", view );
+		skybox->getShader()->setMat4( "projection", _camera->getProjectionMatrix() );
+		// skybox cube
+		glBindVertexArray( skybox->getMesh()->getNormalsBuffer() );
+		glActiveTexture( GL_TEXTURE0 );
+		glBindTexture( GL_TEXTURE_CUBE_MAP, skybox->getTexture()->getID() );
+		glDrawArrays( GL_TRIANGLES, 0, 36 );
+		glBindVertexArray( 0 );
+		glDepthFunc( GL_LESS ); // set depth function back to default
+	}
 
 	// Swap buffers
 	glfwSwapBuffers( _window );
@@ -183,9 +198,20 @@ void Renderer::renderSprite( Shader* shader, Sprite* sprite, glm::mat4 MVP )
 {
 	shader->use();
 
-	setObjectTransform( shader, MVP );
+	setObjectMVP( shader, MVP );
 
 	setCurrentTexture( shader, sprite->getTexture() );
+
+	//setLightSource( shader, _camera->position );
+	float mouseX = InputManager::getManager()->getMouseX();
+	float mouseY = InputManager::getManager()->getMouseY();
+	Vector3 poss = Vector3( mouseX - (MINSWIDTH / 2), mouseY - (MINSHEIGHT / 2), 0.1f ) + _camera->position;
+
+	poss.z += (InputManager::getManager()->getScrollVerticalContinued( InputManager::getManager()->getWindow()) * 2);
+	setLightSource( shader, poss );
+	setViewPos( shader, poss );
+
+	setBlinn( shader, true );
 
 	this->renderMesh(sprite->getShader(), sprite->getMesh(), GL_TRIANGLES );
 }
@@ -201,12 +227,39 @@ void Renderer::setCurrentTexture( Shader* shader, Texture* texture ) {
 	}
 }
 
-void Renderer::setObjectTransform( Shader* shader, glm::mat4 MVP) {
+void Renderer::setObjectMVP( Shader* shader, glm::mat4 MVP ) {
 	if ( shader->isActive() ) {
 		// Send our transformation to the currently bound shader,
 		// in the "MVP" uniform
 		GLuint matrixID = glGetUniformLocation( shader->getID(), "MVP" );
 		glUniformMatrix4fv( matrixID, 1, GL_FALSE, &MVP[0][0] );
+	}
+}
+
+void Renderer::setLightSource( Shader* shader, Vector3 sourcePosition ) {
+	if ( shader->isActive() ) {
+		// Send our transformation to the currently bound shader,
+		// in the "MVP" uniform
+		GLuint lightPosID = glGetUniformLocation( shader->getID(), "lightPos" );
+		glUniform3f( lightPosID, sourcePosition.x, sourcePosition.y, sourcePosition.z );
+	}
+}
+
+void Renderer::setViewPos( Shader* shader, Vector3 sourcePosition ) {
+	if ( shader->isActive() ) {
+		// Send our transformation to the currently bound shader,
+		// in the "MVP" uniform
+		GLuint viewPosID = glGetUniformLocation( shader->getID(), "viewPos" );
+		glUniform3f( viewPosID, sourcePosition.x, sourcePosition.y, sourcePosition.z );
+	}
+}
+
+void Renderer::setBlinn( Shader* shader, bool state ) {
+	if ( shader->isActive() ) {
+		// Send our transformation to the currently bound shader,
+		// in the "MVP" uniform
+		GLuint viewPosID = glGetUniformLocation( shader->getID(), "viewPos" );
+		glUniform1i( viewPosID, state );
 	}
 }
 
@@ -218,7 +271,6 @@ void Renderer::RenderText( Text* text, glm::mat4 MVP )
 	GLfloat y = pos.y;
 	GLfloat scale = text->getScale();
 	RGBAColor color = text->getColor();
-	Mesh* mesh = text->getMesh();
 
 	// Activate corresponding render state	
 	text->getShader()->use();
@@ -294,9 +346,23 @@ void Renderer::renderMesh(Shader* shader, Mesh* mesh, GLuint mode) {
 		( void* ) 0					  // array buffer offset
 	);
 
+	// 3nd attribute buffer : Normals
+	GLuint vertexNormalsID = glGetAttribLocation( shader->getID(), "vertexNormals" );
+	glEnableVertexAttribArray( vertexNormalsID );
+	glBindBuffer( GL_ARRAY_BUFFER, mesh->getNormalsBuffer() );
+	glVertexAttribPointer(
+		vertexNormalsID,			// The attribute we want to configure
+		3,							// size : x+y+z => 3
+		GL_FLOAT,					 // type
+		GL_FALSE,					 // normalized?
+		0,							// stride
+		( void* ) 0					  // array buffer offset
+	);
+
 	// Draw the triangles!
 	glDrawArrays( mode, 0, mesh->getVertices() );
 
 	glDisableVertexAttribArray( vertexPosition_modelspaceID );
 	glDisableVertexAttribArray( vertexUVID );
+	glDisableVertexAttribArray( vertexNormalsID );
 }

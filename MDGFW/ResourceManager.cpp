@@ -30,6 +30,13 @@ ResourceManager::~ResourceManager() {
 		}
 	}
 
+	for each (std::pair<const std::string, Texture*> set in _cubemaps) {
+		Texture* texture = set.second;
+		if ( texture != nullptr ) {
+			delete texture;
+		}
+	}
+
 	FT_Done_FreeType( _freetype );
 }
 
@@ -40,9 +47,30 @@ Texture* ResourceManager::getTexture( std::string filePath ) {
 		return _textures[filePath];
 	}
 	else {
-		Texture* t = new Texture(filePath);
+		Texture* t = new Texture();
+		t->load2DTexture( filePath );
 		if ( t != nullptr && t != NULL ) {
 			_textures[filePath] = t;
+		}
+		return t;
+	}
+}
+
+Texture* ResourceManager::getCubeMap( std::vector<std::string> faces ) {
+	std::string def = "";
+	for ( std::string face : faces ) {
+		def += face + ":";
+	}
+	std::cout << "Loading Cubemap: " << faces[0].c_str() << " & " << faces[1].c_str() << " & " << faces[2].c_str() << " & " << faces[3].c_str() << " & " << faces[4].c_str() << " & " << faces[5].c_str() << std::endl;
+	if ( _cubemaps[def] != nullptr ) {
+		std::cout << "Cubemap: '" << faces[0].c_str() << " & " << faces[1].c_str() << " & " << faces[2].c_str() << " & " << faces[3].c_str() << " & " << faces[4].c_str() << " & " << faces[5].c_str() << "' is already loaded!" << std::endl;
+		return _cubemaps[def];
+	}
+	else {
+		Texture* t = new Texture();
+		t->loadSkybox( faces );
+		if ( t != nullptr && t != NULL ) {
+			_cubemaps[def] = t;
 		}
 		return t;
 	}

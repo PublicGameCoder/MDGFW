@@ -6,7 +6,6 @@ Text::Text() : UIElement() {
 	_color = WHITE;
 	this->setPosition( 0, 0 );
 	_scale = 1.0f;
-	_mesh = new Mesh();
 	init();
 }
 
@@ -16,7 +15,6 @@ Text::Text(std::string txt) : UIElement() {
 	_color = WHITE;
 	this->setPosition( 0, 0 );
 	_scale = 1.0f;
-	_mesh = new Mesh();
 	init();
 }
 
@@ -27,7 +25,6 @@ Text::~Text() {
 int Text::init() {
 	_fontChars = ResourceManager::getManager()->getFontChars( DEFAULTFONT );
 	setupShader();
-	_mesh->genTextMesh();
 
 	// Configure VAO/VBO for texture quads
 	glGenVertexArrays( 1, &VAO );

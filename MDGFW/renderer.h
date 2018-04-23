@@ -9,6 +9,7 @@
 #include <MDGFW/camera.h>
 #include <MDGFW/Line.h>
 #include <MDGFW/sprite.h>
+#include <MDGFW\Skybox.h>
 #include <MDGFW/Scene.h>
 #include <MDGFW/SceneManager.h>
 
@@ -38,8 +39,11 @@ class Renderer
 		unsigned int _window_width;
 		unsigned int _window_height;
 
-		void Renderer::setObjectTransform( Shader* shader, glm::mat4 MVP );
-		void Renderer::setCurrentTexture( Shader* shader, Texture* texture );
+		void setCurrentTexture( Shader* shader, Texture* texture );
+		void setObjectMVP( Shader* shader, glm::mat4 MVP );
+		void setLightSource( Shader* shader, Vector3 sourcePosition);
+		void setViewPos( Shader* shader, Vector3 sourcePosition );
+		void setBlinn( Shader* shader, bool state );
 
 		void renderLines( Entity* entity);
 		void renderEntity( Entity* entity, glm::mat4 modelMatrix);

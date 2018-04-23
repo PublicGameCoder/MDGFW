@@ -97,6 +97,12 @@ add_library(MDGFW
 	MDGFW/UIElement.h
 	MDGFW/Mesh.cpp
 	MDGFW/Mesh.h
+	MDGFW/Skybox.cpp
+	MDGFW/Skybox.h
+	MDGFW/Animation.cpp
+	MDGFW/Animation.h
+	MDGFW/Animator.cpp
+	MDGFW/Animator.h
 )
 file(
 	COPY MDGFW/shaders
@@ -105,6 +111,11 @@ file(
 
 file(
 	COPY MDGFW/fonts
+	DESTINATION ${CMAKE_BINARY_DIR}
+)
+
+file(
+	COPY MDGFW/skyboxes
 	DESTINATION ${CMAKE_BINARY_DIR}
 )
 

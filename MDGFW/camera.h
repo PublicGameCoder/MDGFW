@@ -23,9 +23,22 @@ private:
 
 	float _speed; // 300 units / second
 
-	float _FOV;
 	float _nearPlane, _farPlane;
+	
+	Vector3 front;
+	Vector3 up;
+	Vector3 right;
+
+	float yaw;
+	float pitch;
+	float roll;
+	float lastX;
+	float lastY;
+	float fov;
+
+	
 	void orthographic();
+	void perspective();
 };
 
 #endif

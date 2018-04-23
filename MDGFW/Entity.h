@@ -6,6 +6,7 @@
 #include <MDGFW\Line.h>
 #include <MDGFW\Text.h>
 #include <MDGFW\sprite.h>
+#include <MDGFW\Animator.h>
 #include <MDGFW\InputManager.h>
 #include <MDGFW\MDGTime.h>
 #include <MDGFW\Mathmatics.h>
@@ -30,7 +31,9 @@ public:
 	std::vector<Line*> getLines();
 	std::vector<Text*> getTexts();
 	Vector3 getWorldPosition();
+	Animator* getAnimator();
 private:
+	Animator* _animator;
 	Entity* _parent;
 	Vector3 _worldPosition;
 	Sprite* _sprite;

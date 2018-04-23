@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <map>
 
 class ResourceManager;
@@ -12,8 +13,8 @@ class ResourceManager;
 class Texture
 {
 public:
-	Texture(const std::string &filePath);
-	~Texture();
+	Texture();
+	virtual ~Texture();
 
 	GLuint getID() {
 		return _textureID;
@@ -31,13 +32,14 @@ public:
 		return _nrChannels;
 	}
 
+	void load2DTexture( const std::string &filePath );
+	void loadSkybox( std::vector<std::string> &faces );
+
 private:
 	GLuint _textureID;
 	int _nrChannels;
 	int _width;
 	int _height;
-
-	void getIDFromData( const std::string &filePath );
 };
 
 #endif // !TEXTURE_H

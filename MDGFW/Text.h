@@ -31,10 +31,6 @@ public:
 		return _shader;
 	};
 
-	Mesh* getMesh() {
-		return _mesh;
-	}
-
 	GLfloat getScale() {
 		return _scale;
 	}
@@ -58,7 +54,6 @@ private:
 	RGBAColor _color;
 
 	Shader* _shader;
-	Mesh* _mesh;
 
 	float _scale;
 

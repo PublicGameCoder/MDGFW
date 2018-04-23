@@ -1,6 +1,6 @@
 #include <MDGFW/sprite.h>
 
-Sprite::Sprite(std::string image_path)
+Sprite::Sprite( std::string image_path )
 {
 
 	// Load image as texture

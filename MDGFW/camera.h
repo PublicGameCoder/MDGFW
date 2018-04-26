@@ -10,6 +10,7 @@ class Camera : public Entity
 public:
 	Camera();
 	virtual ~Camera();
+	void Update();
 
 	void updateCamera( GLFWwindow* window );
 	glm::mat4 getProjectionMatrix();

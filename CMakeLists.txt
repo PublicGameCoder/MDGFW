@@ -122,6 +122,8 @@ file(
 IF(MAKE_WORKSPACE)
 	add_executable(Workspace
 		Workspace/main.cpp
+		Workspace/Player.cpp
+		Workspace/Player.h
 	)
 	
 	file(

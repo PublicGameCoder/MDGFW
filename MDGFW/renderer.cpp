@@ -114,7 +114,7 @@ void Renderer::updateWorld( Scene* scene ) {
 
 void Renderer::renderEntity( Entity* entity, glm::mat4 modelMatrix) {
 
-	entity->update();
+	entity->Update();
 
 	glm::mat4 projectionMatrix = _camera->getProjectionMatrix(); // get from Camera (Camera mode (2D/3D | Orthographic/Perspective))
 	glm::mat4 viewMatrix = _camera->getViewMatrix(); // get from Camera (Camera position and direction)

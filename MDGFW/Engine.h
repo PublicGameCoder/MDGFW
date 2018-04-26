@@ -19,7 +19,7 @@ public:
 	}
 
 	bool isRunning() {
-		return _running;
+		return (_running || !glfwWindowShouldClose( getWindow() ) == 0);
 	}
 
 	void setRunning( bool state ) {

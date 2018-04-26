@@ -17,7 +17,7 @@ class Entity
 public:
 	Entity();
 	virtual ~Entity();
-	virtual void update();
+	virtual void Update() = 0;
 	void addSprite(std::string filePath);
 	void addChild( Entity* entity );
 	void addLine( Line* line );

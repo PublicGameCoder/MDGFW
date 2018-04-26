@@ -32,6 +32,10 @@ Camera::~Camera() {
 
 }
 
+void Camera::Update() {
+
+}
+
 void Camera::orthographic() {
 	_projectionMatrix = glm::ortho( 0.0f, ( float ) MINSWIDTH, ( float ) MINSHEIGHT, 0.0f, 0.1f, 100.0f );
 }

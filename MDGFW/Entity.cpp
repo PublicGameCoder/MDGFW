@@ -7,6 +7,7 @@ Entity::Entity() {
 	_worldPosition = position;
 	_sprite = nullptr;
 	_parent = nullptr;
+	_animator = new Animator();
 }
 
 Entity::~Entity() {
@@ -26,7 +27,7 @@ Entity::~Entity() {
 	flushSprite();
 }
 
-void Entity::update() {
+void Entity::Update() {
 	calcWorldPosition();
 }
 

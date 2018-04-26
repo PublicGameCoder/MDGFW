@@ -11,6 +11,7 @@ class Scene : public Entity
 public:
 	Scene();
 	virtual ~Scene();
+	void Update();
 
 	void addSkybox( std::string right_IMGPath, std::string left_IMGPath, std::string top_IMGPath, std::string bottom_IMGPath, std::string front_IMGPath, std::string back_IMGPath );
 	
